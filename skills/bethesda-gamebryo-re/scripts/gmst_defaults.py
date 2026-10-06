@@ -15,7 +15,8 @@ name's first letter is the type (f float, i/b int/bool, s string, u unsigned, c 
 With --esm the script reads the plugin's GMST records and compares. Expect MOST values to differ: the master overrides the
 built-in defaults (placeholders such as "Need a gamesetting description." live in the exe). The oracle for the extraction is
 (a) near-complete name coverage of the ESM's GMST records and (b) exact agreement on non-trivial values where the master
-happens not to override (e.g. 20, 0.4, 130, 90 across dozens of floats), which would be improbable if decoding were wrong.
+happens not to override (e.g. 20, 0.4, 130, 90 across dozens of floats), and (c) an independent objdump-based extractor agreed
+on all 711 float defaults it produced (this script also finds fld1/fldz floats, ints and strings).
 
 Output is derived from the executable: keep it private (never commit it); the script itself is generic. Requires the sibling
 skill re-binary-recon (pe.py). Validated on the Steam build of Oblivion.exe (x86, MSVC, fixed base).
