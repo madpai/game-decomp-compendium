@@ -89,6 +89,29 @@
 "source": "local"
 },
 {
+"path": "techniques/android-emulator-testing-of-arm64-native-ports.md",
+"kind": "technique",
+"title": "Testing arm64-only Android native ports on an x86_64 emulator: GLES translation crash, native x86_64 rebuild, GL4ES/EGL start-up deadlock",
+"game": "",
+"games_also": [],
+"game_version": "",
+"platform": null,
+"engine": null,
+"route": null,
+"tools": [],
+"anti_cheat": "",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/android-emulator-testing-of-arm64-native-ports.md",
+"summary": "If an Android port ships only arm64 libraries and renders through GL4ES/GLES, the stock x86_64 emulator crashes in Google's ARM translation layer. Build the same source for x86_64, add `lib/x86_64` to a copy of the APK, and drive it with a scripted adb gate. Doing this also exposed a real start-up deadlock between GL4ES's load-time `eglGetDisplay` and the UI RenderThread.",
+"gotchas": 9,
+"source": "local"
+},
+{
 "path": "techniques/static-recon-of-msvc-game-executables.md",
 "kind": "technique",
 "title": "Static recon of MSVC game executables in pure Python: PE triage, RTTI classes, string pivots, signatures",
