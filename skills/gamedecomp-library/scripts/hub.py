@@ -19,7 +19,7 @@ import argparse, collections, json, math, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import load, data_path, LOCAL_DATA, CACHE, REPO, CLONES, SKILLS_ROOT
 
-STOP = set('a an and are as at be by for from has have how i in is it of on or that the this to was what when where which with you your do does did can could should would not no if then than into out up use used using get set'.split())
+STOP = set('a an and are as at be by for from has have how i in is it of on or that the this to was what when where which with you your do does did can could should would not no if then than into out up use used using get set new game games'.split())
 def toks(text):
     return [t for t in re.findall(r"[a-z0-9][a-z0-9_.+#-]*", (text or '').lower().replace('--', ' ')) if t not in STOP and len(t) > 1]
 
@@ -77,17 +77,19 @@ def rank(docs, query, limit):
     n = len(docs); avg = sum(d.len for d in docs) / max(n, 1)
     df = collections.Counter(t for d in docs for t in set(d.tf))
     res = []
+    need = max(1, math.ceil(len(set(q)) * 0.5))      # a hit must cover at least half of the distinct query terms
     for d in docs:
-        score = 0.0
+        score = 0.0; matched = set()
         for t in q:
             f = d.tf.get(t, 0)
             if not f:
                 # light prefix matching helps with plurals / hyphenation ("decompil" in "decompilation")
                 f = sum(c for w, c in d.tf.items() if len(t) > 3 and (w.startswith(t) or t.startswith(w) and len(w) > 4)) * 0.5
                 if not f: continue
+            matched.add(t)
             idf = math.log(1 + (n - df.get(t, 0) + 0.5) / (df.get(t, 0) + 0.5))
             score += idf * (f * 2.2) / (f + 1.2 * (0.25 + 0.75 * d.len / avg))
-        if score > 0: res.append((score, d))
+        if score > 0 and len(matched) >= need: res.append((score, d))
     res.sort(key=lambda x: -x[0])
     return res[:limit]
 
