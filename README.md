@@ -22,6 +22,7 @@ A knowledge base **for AI agents** (and the humans directing them) working on ga
 Data (in `skills/gamedecomp-library/data/`):
 - `catalog.json` / `catalog.tsv`: 790 projects (702 decomps, 72 tools, 15 related, 1 unconfirmed) with platform, type, compilers/tools/build styles, progress, licence, stars, push date, read-depth, AI-contribution policy flag, notes.
 - `field-notes.json`: 59 agent-written field notes from [universal-modder](https://github.com/rehan-remade/universal-modder) (50 games, 9 techniques, ~680 symptom→cause→fix gotchas), `playbooks.json` (12 engine playbooks), `modder-skills.json`.
+- `local-notes.json`: this repository's own field notes (`knowledge/`: Oblivion exe recon, static-recon technique, OpenOblivion lessons; same format as universal-modder's, so they can be offered upstream).
 - `sources.json`: where everything came from, licences, snapshot dates, refresh commands.
 
 ## Quick start
@@ -44,7 +45,7 @@ You can also point an agent at the raw files, e.g. `https://raw.githubuserconten
 Own copy of the game only; offline/single-player for runtime work; no anti-cheat or DRM bypass; no game files, assets, decompiler dumps or executable-derived tables in repositories; respect each project's AI-contribution policy (the catalog flags it); never open issues/PRs on someone's behalf unasked; evidence levels on every fact; an oracle for every claim. Details: `skills/decomp-matching-workflow/references/legal-and-etiquette.md`, `skills/game-hooking-patterns/references/safety-and-etiquette.md`.
 
 ## Keeping it current
-`skills/gamedecomp-library/scripts/refresh.py` re-fetches the catalog sources and re-harvests GitHub metadata (needs `gh auth login`); `refresh/sync_modder_kb.py --pull` refreshes the field-note snapshot; `scripts/selftest.py` validates the suite (also run by CI). Add notes for new entries in `scripts/refresh/overlay.py`.
+`skills/gamedecomp-library/scripts/refresh.py` re-fetches the catalog sources and re-harvests GitHub metadata (needs `gh auth login`); `refresh/sync_modder_kb.py --pull` refreshes the field-note snapshot; `scripts/selftest.py` validates the suite (also run by CI). Add notes for new entries in `scripts/refresh/overlay.py`. Contribute findings as field notes under `knowledge/` (template in `skills/gamedecomp-library/references/agent-method.md`).
 
 ## Sources and credit
 GameDecompLibrary (SolarFren), Game-Decompilations (Samidy), decompedia (decompals), universal-modder (Rehan and contributors, MIT), and the individual projects named throughout (fromsoftware-rs, Thief 3 SDK, BW1, AVP2, LEGOLAND, isle/reccmp, Halo CE decomp, objdiff, asm-differ, bsa-rs, esplugin, libloadorder, pelite, iced, binrw, unity-rs, jak-project, UnleashedRecomp...). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Only facts and paraphrases are redistributed; each project's own repository is the authority.

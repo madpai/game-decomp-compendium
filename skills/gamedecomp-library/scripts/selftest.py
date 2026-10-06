@@ -32,7 +32,7 @@ for name in SUITE:
                 except SyntaxError as e: check(False, f'{name}: {f} does not compile: {e}')
                 else: check(True, '')
 lib = os.path.join(root, 'gamedecomp-library', 'data')
-for f in ('catalog.json', 'field-notes.json', 'playbooks.json', 'modder-skills.json', 'sources.json', 'overlay.json'):
+for f in ('catalog.json', 'field-notes.json', 'local-notes.json', 'playbooks.json', 'modder-skills.json', 'sources.json', 'overlay.json'):
     p = os.path.join(lib, f)
     check(os.path.isfile(p), f'data/{f} missing')
     if os.path.isfile(p):
@@ -43,6 +43,11 @@ check(len(cat) > 700, f'catalog unexpectedly small: {len(cat)}')
 check(len({e['id'] for e in cat}) == len(cat), 'duplicate catalog ids')
 for e in cat:
     if e['ai'] == 'human-only': check(not e['use'] or True, '')
+idx = os.path.join(HERE, 'refresh', 'index_local_notes.py')
+repo_root = os.path.normpath(os.path.join(root, '..'))
+if os.path.isdir(os.path.join(repo_root, 'knowledge')):
+    r = subprocess.run([sys.executable, idx, '--repo-root', repo_root], capture_output=True, text=True)
+    check(r.returncode == 0, f'local field notes failed validation: {r.stdout[-300:]}')
 hub = os.path.join(HERE, 'hub.py')
 for q, want in (('rtti vtable', 'ref'), ('halo', 'project'), ('oblivion', 'ref')):
     out = subprocess.run([sys.executable, hub, 'search', q, '--limit', '8'], capture_output=True, text=True, env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'})

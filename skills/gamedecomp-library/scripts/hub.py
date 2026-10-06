@@ -38,15 +38,16 @@ def build_docs(sources, full_text):
             meta = f"{e['category']} | {e['platform']} | {('%.0f%%' % e['progress']) if e['progress'] not in (None, '') else '-'} | {e['license'] or '-'} | ai:{e['ai']} | depth:{e['depth']}"
             docs.append(Doc('project', e['id'], e['name'], txt, e['name'] + ' ' + e['id'], e['url'], meta))
     if 'notes' in sources:
-        nd = load('field-notes.json', {'notes': []})['notes']
+        nd = load('field-notes.json', {'notes': []})['notes'] + load('local-notes.json', {'notes': []})['notes']
         for n in nd:
             body = ''
             if full_text:
                 p = os.path.join(CLONES, 'universal-modder', 'knowledge', n['path'])
+                if n.get('source') == 'local': p = os.path.join(SKILLS_ROOT, '..', 'knowledge', n['path'])
                 if os.path.isfile(p): body = open(p, encoding='utf-8').read()
             txt = ' '.join([n.get('summary', ''), ' '.join(n.get('tags') or []), ' '.join(n.get('tools') or []), n.get('engine') or '', n.get('route') or '', n.get('anti_cheat') or '', body])
             docs.append(Doc('note', n['path'], n['title'], txt, f"{n['title']} {n.get('game','')} {' '.join(n.get('games_also') or [])}", n['url'],
-                            f"{n['kind']} | engine:{n.get('engine')} | route:{n.get('route')} | status:{n.get('status')} | gotchas:{n.get('gotchas')}"))
+                            f"{n['kind']}{' (this repo)' if n.get('source') == 'local' else ' (universal-modder)'} | engine:{n.get('engine')} | route:{n.get('route')} | status:{n.get('status')} | gotchas:{n.get('gotchas')}"))
     if 'playbooks' in sources:
         for p in load('playbooks.json', {'playbooks': []})['playbooks']:
             docs.append(Doc('playbook', p['id'], p['title'], p['identify'] + ' ' + ' '.join(p['headings']), p['title'] + ' ' + p['id'], p['url'], 'engine playbook (universal-modder)'))
@@ -132,7 +133,8 @@ def cmd_show(a):
                 print(json.dumps(e, indent=1, ensure_ascii=False)); return
     elif kind in ('note', 'playbook'):
         key = 'notes' if kind == 'note' else 'playbooks'
-        for e in load('field-notes.json' if kind == 'note' else 'playbooks.json')[key]:
+        pool = (load('field-notes.json')['notes'] + load('local-notes.json', {'notes': []})['notes']) if kind == 'note' else load('playbooks.json')['playbooks']
+        for e in pool:
             if ident in (e.get('path'), e.get('id')) or ident in e['path']:
                 print(json.dumps(e, indent=1, ensure_ascii=False))
                 lp = os.path.join(CLONES, 'universal-modder', 'knowledge' if kind == 'note' else '', e['path'] if kind == 'playbook' else e['path'])

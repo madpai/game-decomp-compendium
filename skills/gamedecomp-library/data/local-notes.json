@@ -1,0 +1,87 @@
+{
+"meta": {
+"source": "https://github.com/madpai/game-decomp-compendium",
+"license": "MIT"
+},
+"notes": [
+{
+"path": "games/oblivion/oblivion-exe-recon-rtti-voices-gmst.md",
+"kind": "game",
+"title": "Oblivion.exe static recon: full RTTI, voice file naming, and game-setting defaults compiled into the exe",
+"game": "The Elder Scrolls IV: Oblivion",
+"games_also": [],
+"game_version": "Steam retail build, PE timestamp 0x462392c7 (2007-04-16), Oblivion.esm from the same install, Linux host with Python 3.14",
+"platform": "windows",
+"engine": "gamebryo",
+"route": "reimplementation",
+"tools": [
+"re-binary-recon scripts (pe_info, rtti_scan, string_xrefs)",
+"bethesda-gamebryo-re/gmst_defaults.py",
+"bsa-rs docs"
+],
+"anti_cheat": "None involved: files read from disk only; the exe was never run, attached to or patched (a protection stub wraps the entry point)",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/oblivion-exe-recon-rtti-voices-gmst.md",
+"summary": "Static analysis of the retail Steam executable, in support of an OpenMW-based Android port. It has full MSVC RTTI (1,715 vtables, 1,482 classes), the voice file name format is confirmed by the exe itself, and ~2,050 game-setting defaults live in static initializers (so \"settings absent from the master\" still have values). All results come from read-only scripts that finish in under a second.",
+"gotchas": 7,
+"source": "local"
+},
+{
+"path": "games/oblivion/openoblivion-port-lessons-scripts-dialogue-trees.md",
+"kind": "game",
+"title": "OpenOblivion lessons: TES4 script compiler, dialogue/quest runtime, SpeedTree billboards and touch menus on a patched OpenMW",
+"game": "The Elder Scrolls IV: Oblivion",
+"games_also": [],
+"game_version": "OpenOblivion builds 0.40-0.44 on a patched OpenMW (desktop pin vs Android donor, Lua API rev 160 vs 129); Oblivion.esm from a retail install",
+"platform": "windows",
+"engine": "gamebryo",
+"route": "reimplementation",
+"tools": [
+"OpenMW (patched)",
+"LuaJIT",
+"docker probe image with xdotool",
+"tes4_script.py compiler",
+"ctest fixtures"
+],
+"anti_cheat": "none (single-player port; owner's own data)",
+"status": "in-progress",
+"agents": [
+"Claude Code (Opus 5.5)"
+],
+"date": "2026-10-05",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/openoblivion-port-lessons-scripts-dialogue-trees.md",
+"summary": "What a 1:1 Android port of Oblivion on a patched OpenMW needed for trees, quests/journal, spoken conversations, object scripts and always-closable menus, with the bugs that cost time. Verified on desktop probes and CI; phone confirmation of 0.40-0.44 was pending when written.",
+"gotchas": 11,
+"source": "local"
+},
+{
+"path": "techniques/static-recon-of-msvc-game-executables.md",
+"kind": "technique",
+"title": "Static recon of MSVC game executables in pure Python: PE triage, RTTI classes, string pivots, signatures",
+"game": "",
+"games_also": [],
+"game_version": "",
+"platform": null,
+"engine": null,
+"route": null,
+"tools": [],
+"anti_cheat": "",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/static-recon-of-msvc-game-executables.md",
+"summary": "Four dependency-free scripts that triage a PE, recover C++ class names and inheritance from MSVC RTTI, find the code that references a string, and build version-robust byte signatures. Verified on x86 (Oblivion.exe, GoldSrc engine DLL) and x64 (a Unity player DLL, Unreal executables) binaries.",
+"gotchas": 6,
+"source": "local"
+}
+]
+}

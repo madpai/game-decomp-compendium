@@ -16,8 +16,10 @@ This repository is a retrieval layer and method library for game reverse enginee
 - Do not load the whole catalog into context. Use the query tools.
 
 ## Working on this repository
+- This repository is the source of truth: edit under `skills/` (never in `~/.claude/skills`), then run `./install.sh` to refresh your local copy.
 - Edit skills under `skills/`; keep each `SKILL.md` under 500 lines with a "pushy" description (what it does and when to use it); put depth in `references/`.
 - Data is generated: change `skills/gamedecomp-library/scripts/refresh/overlay.py` (hand notes, depth, AI policy) and re-run `refresh.py`; never edit `catalog.json` by hand.
-- Run `python3 skills/gamedecomp-library/scripts/selftest.py` before committing.
+- Run `python3 skills/gamedecomp-library/scripts/selftest.py` before committing (it also validates `knowledge/` notes).
+- Field notes live in `knowledge/` (see its README); rebuild the index with `python3 skills/gamedecomp-library/scripts/refresh/index_local_notes.py`.
 - Text style: plain, specific, evidence-tagged; paraphrase sources and name them; no bulk copying of third-party text; short snippets only, with attribution.
 - Add new knowledge as a field note (template: `skills/gamedecomp-library/references/agent-method.md`) or as a section in the relevant skill reference.

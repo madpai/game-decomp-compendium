@@ -55,6 +55,17 @@
    "records": 29,
    "use": "Shallow clones read for the skills: fromsoftware-rs (+vtable-rs, from-singleton), Thief3, BW1, AVP2, LEGOLAND, isle, Halo CE, FNV, objdiff, asm-differ, bsa-rs, esplugin, libloadorder, pelite, iced, binrw, unity-rs, jak-project, UnleashedRecomp... Clones are NOT redistributed; scripts/clone.sh fetches them on demand and refuses projects that forbid agent use.",
    "refresh": "scripts/clone.sh --deep"
+  },
+  {
+   "id": "local-notes",
+   "name": "This repository's own field notes",
+   "kind": "field-notes",
+   "url": "https://github.com/madpai/game-decomp-compendium/tree/main/knowledge",
+   "license": "MIT",
+   "snapshot": "2026-10-06",
+   "records": 3,
+   "use": "Findings from our own work in universal-modder's note format (Oblivion exe recon, static recon technique, OpenOblivion lessons). Indexed into data/local-notes.json; add notes under knowledge/ and run scripts/refresh/index_local_notes.py.",
+   "refresh": "scripts/refresh/index_local_notes.py"
   }
  ]
 }
