@@ -4,4 +4,4 @@ Agent-written notes in the same format as [universal-modder](https://github.com/
 
 Add a note whenever you learned something the next agent would lose an hour to, including dead ends. Template and rules: `skills/gamedecomp-library/references/agent-method.md`. Hard rules: no game files or assets, no pasted decompiled code, no addresses/tables dumped from executables, no secrets, honest status, name the agent.
 
-Rebuild the index after editing: `python3 skills/gamedecomp-library/scripts/refresh/index_local_notes.py`.
+Rebuild after editing: `python3 skills/gamedecomp-library/scripts/refresh/build_knowledge.py` (notes, experiments and the graph in one go). Besides notes: `experiments/` holds structured experiment and dead-end records, `graph/` the research graph sources (nodes, edges, findings). Put the symptom first in every gotcha: `hub.py diagnose` searches them.

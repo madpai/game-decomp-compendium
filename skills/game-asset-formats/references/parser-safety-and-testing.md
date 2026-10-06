@@ -23,3 +23,14 @@ Declarative `#[derive(BinRead, BinWrite)]` with `#[br(magic = b"BSA\0")]`, endia
 
 ## Python quick rules
 `struct.unpack_from` with explicit little-endian; assert `offset + size <= len(buf)` before slicing; `memoryview` for big files; validate against a second parse path; keep the parsing function pure so a test can feed it fixtures.
+
+## Boundary and count errors (the last record goes missing or is garbage)
+General failure classes, **[inferred]**: no incident of this kind is recorded in the compendium yet, so add an experiment or gotcha the first time you hit one (`hub.py template experiment`). Symptom search: `hub.py diagnose "archive parser misses a final record"`.
+- Loop bound off by one (`range(n - 1)`, `< n - 1`), or a count taken from a header field that excludes a sentinel or terminator entry.
+- Entry size computed as `next.offset - this.offset`: the last entry has no next. Use the section or file end, or an explicit size field.
+- A trailing record or table that is not padded or terminated like the earlier ones (alignment, NUL-terminated name table, a final chunk shorter than the block size).
+- Offsets relative to different bases in different tables (file start, header end, data start). The last entries expose the mix-up when earlier ones happen to coincide.
+- Two counting conventions: a serialized triangle strip of length n holds n-2 triangles, and a loader that drops degenerate steps keeps fewer (1,288 serialized versus 575 kept on one Oblivion stair mesh). Say which count you mean before calling a count a bug.
+- A short read or truncated final block treated as end of file. Fail loudly instead.
+
+Oracles that find these: entry count equals both the header's count and an independent tool's listing; the sum of entry sizes plus headers equals the file size (no gaps, no overlap); parse, write, byte-compare round trip (`technique:round-trip-oracle`); size and hash of the last few entries against a known-good extractor; fuzz with files truncated at every entry boundary.

@@ -25,10 +25,70 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"rtti",
+"vtable",
+"gmst",
+"voice-files",
+"static-analysis",
+"openmw",
+"port"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/oblivion-exe-recon-rtti-voices-gmst.md",
 "summary": "Static analysis of the retail Steam executable, in support of an OpenMW-based Android port. It has full MSVC RTTI (1,715 vtables, 1,482 classes), the voice file name format is confirmed by the exe itself, and ~2,050 game-setting defaults live in static initializers (so \"settings absent from the master\" still have values). All results come from read-only scripts that finish in under a second.",
+"verification": "Name coverage: the GMST extraction covers 378 of the 382 GMST records in the master. An independent disassembly-based extractor (objdump text, floats only) agreed on all 711 float defaults it produced. Voice naming matches archive contents and the bsa-rs example. CTDA size measured over every condition. **Not verified**: runtime behaviour (the exe was never run), the topic-list rule, the quest-script delay value, struct layouts of the classes.",
 "gotchas": 7,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "Entry point sits in a high-entropy `.bind` section",
+"cause": "a protection stub wraps the exe.",
+"fix": "analyse only the readable `.text/.rdata/.data`; do not attempt to remove the wrapper; everything above was possible without it.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "String has no code references",
+"cause": "it is referenced from a data table (command table, setting table).",
+"fix": "treat data xrefs as table entries, compute the record stride from consecutive references, and read the table.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Naive GMST scan found only strings",
+"cause": "floats load their default with `fld [addr]; push ecx; fstp [esp]` (an offset arithmetic bug of mine made the scan miss them).",
+"fix": "anchor on `push NAME; mov ecx, OBJ; call` and look back exactly 10 bytes for the float form, 5 bytes for `push imm32`.",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "~20% of settings still missing",
+"cause": "0.0 and 1.0 use `fldz`/`fld1`, and for those the compiler puts `mov ecx, OBJ` *before* `push NAME`; small ints use `push imm8`.",
+"fix": "scan both instruction orders and both push forms; coverage went from 285 to 306 to 378 of 382.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Most exe defaults differ from the master's values",
+"cause": "the master overrides placeholder defaults (strings like \"Need a gamesetting description.\").",
+"fix": "do not use equality with the master as the oracle; use name coverage, an independent extractor, and non-trivial equal values.",
+"detail": ""
+},
+{
+"n": 6,
+"symptom": "`approx func` from the string tool lands mid-function",
+"cause": "it only looks for the previous padding run.",
+"fix": "treat it as a reading start, confirm with a prologue.",
+"detail": ""
+},
+{
+"n": 7,
+"symptom": "Dumps are exe-derived",
+"cause": "",
+"fix": "keep class maps and setting tables out of public repositories; publish method, counts and rules.",
+"detail": "Fix: keep class maps and setting tables out of public repositories; publish method, counts and rules."
+}
+],
 "source": "local"
 },
 {
@@ -53,10 +113,174 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"ui",
+"menus",
+"xml",
+"scripting",
+"coverage",
+"planning",
+"openmw",
+"port"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/oblivion-menus-xml-and-script-command-coverage.md",
 "summary": "Two measurements that change how a port should be planned: the original menus are 104 XML files (an expression language over DDS art), so UI parity means writing an interpreter, not hand-building screens; and counting command call sites in the compiled master shows which subsystems (not which commands) the script runtime is missing.",
+"verification": "Counts are exact for the compiled data; the subsystem buckets are regex-based and approximate (about 1,000 sites stayed unbucketed). Not verified: that every menu is expressible by an interpreter of the common tags (a long tail of 500+ tags exists), runtime behaviour of the original menus.",
 "gotchas": 5,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "Command coverage by distinct names looks small",
+"cause": "the long tail of rare commands.",
+"fix": "weigh by call sites and group by subsystem; five subsystems explain most of the gap.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "A missing command that returns a value is not a harmless stub",
+"cause": "the runtime returns 0 and logs once, so conditions silently take the wrong branch.",
+"fix": "count value-returning stubs separately and make them loud.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Regex bucketing misfiles commands",
+"cause": "",
+"fix": "treat percentages as approximate; fix the bucket table when reviewing the top 50.",
+"detail": "Fix: treat percentages as approximate; fix the bucket table when reviewing the top 50."
+},
+{
+"n": 4,
+"symptom": "Menu XML invites hand-translation",
+"cause": "each screen is small.",
+"fix": "write the expression/tile interpreter once; per-menu code should only supply user-trait values.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Setting not found among game settings",
+"cause": "it is an INI setting (name carries a `:Section` suffix in the executable) with its default in the shipped INI file.",
+"fix": "look in `Oblivion_default.ini` and for `name:Section` strings.",
+"detail": ""
+}
+],
+"source": "local"
+},
+{
+"path": "games/oblivion/openoblivion-movement-collision-case-study.md",
+"kind": "game",
+"title": "OpenOblivion movement and collision case study: authored Havok collision, the measured player hull, stair camera timing, gait, silent model failures",
+"game": "The Elder Scrolls IV: Oblivion",
+"games_also": [],
+"game_version": "Steam retail Oblivion (exe PE timestamp 0x462392c7 for class facts); owner's Vilverin visual slice for data facts; OpenOblivion preview builds 0.3-0.23 on OpenMW 0.52 (desktop pin) and the Android 0.51 base",
+"platform": "windows",
+"engine": "gamebryo",
+"route": "reimplementation",
+"tools": [
+"OpenMW (patched)",
+"Bullet",
+"desktop probe with a scripted controls driver",
+"read-only process-memory sampler on the owner's own copy",
+"niftools nif.xml",
+"PyFFI cross-check"
+],
+"anti_cheat": "None involved: owner's own single-player copy, offline; the sampler only read memory of an unchanged copy; nothing written to the process; no DRM or protection touched",
+"status": "in-progress",
+"agents": [
+"Claude Code (Sonnet 5.5), compiled from the OpenOblivion project docs and private metrics"
+],
+"date": "2026-10-06",
+"tags": [
+"havok",
+"bhk",
+"mopp",
+"tristrips",
+"collision",
+"stairs",
+"camera",
+"character-controller",
+"hull",
+"gait",
+"openmw",
+"bullet",
+"android"
+],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/openoblivion-movement-collision-case-study.md",
+"summary": "What a patched-donor port learned about Oblivion's Havok-facing movement: collision is authored (and differs from the render mesh), the player is a pointed convex hull and not a capsule, the donor's stair solver breaks when you give it that hull unless you port the support-point ground test, stair camera smoothing must run after physics, and a failed model load can masquerade as a collision bug. Each lesson links an experiment record; reusable physics knowledge is in `bethesda-gamebryo-re/refere",
+"verification": "Paired same-binary probes (raw versus changed), gates for walking response, stopping, jump/landing, a wall that must block, healthy-tracking control; ray grids on matching AABBs; the original's own Z(Y) samples; independent decoders for animation; emulator before/after harnesses. **Not verified:** any phone result of the hull, authored-collision or gait builds (phone testing is paused), original step/slope/jump, run speed, anything outside the Vilverin slice, and the isolated cause of the Lua-filter regression.",
+"gotchas": 10,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "Per-tread camera jolt although the body climbs fine",
+"cause": "the view follows the player root through discrete rises; an eye filter in Lua `onFrame` runs before physics and the camera update at the OpenMW pin and regressed the real ascent (1206.7 to 3008.3) while passing on the synthetic fixture.",
+"fix": "apply the smoothing inside the camera position update after physics (1321.4 to 535.7). The phase explanation is inferred, not isolated (EXP-OO-001, EXP-OO-002).",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "A change looked good on the generated stair fixture and bad on the real stairs",
+"cause": "not established; the synthetic route is a clean staircase and the real treads are irregular, and the Lua filter's result differed even between real ascent (worse) and real descent (better).",
+"fix": "require a real-stair route in every paired probe and keep the fixture as a first oracle only (EXP-OO-001).",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Collision came out seven times too large",
+"cause": "the packed-vertex factor of 7 was applied to `bhkNiTriStripsShape` vertices that are already in mesh units.",
+"fix": "choose the scale per shape class and compare bounds first (EXP-OO-004).",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "Player climbed at 440 to 480 units/s after swapping in the measured hull",
+"cause": "the cone's contact on a tread edge failed the donor's walkable-normal test, so the inherited stair hack moved the body 10 units per frame.",
+"fix": "judge walkability from the support point under the hull centre (EXP-OO-005, EXP-OO-006).",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Player stopped at a visibly open doorway",
+"cause": "the player collision model failed to load and the engine silently substituted a 123-unit error-marker body (the frame opens 111 units at mid height).",
+"fix": "correct the model file and make a failed supplied model fail the probe; read load errors before debugging collision (EXP-OO-009).",
+"detail": ""
+},
+{
+"n": 6,
+"symptom": "Run looked the same as walk; three binding experiments changed nothing",
+"cause": "the donor selects gait from the animation state machine and the preview player had no locomotion animations.",
+"fix": "override the maximum-speed function with the settings-based formula (EXP-OO-007, EXP-OO-008).",
+"detail": ""
+},
+{
+"n": 7,
+"symptom": "The port stood about 3.25 units higher than the original on flat floor",
+"cause": "the original hull floats about 4 units above the floor triangles and its reference sits below them; the port rested the hull on the floor.",
+"fix": "not applied; recorded as measured but unreproduced (finding `oblivion-controller-floats-above-floor`).",
+"detail": ""
+},
+{
+"n": 8,
+"symptom": "Triangle counts disagree between the file and the loader",
+"cause": "a serialized strip of length n is n-2 triangles, but degenerate strip steps (two equal indices) are dropped (1,288 serialized, 575 kept on one stair).",
+"fix": "count the way the loader builds, and say which you mean.",
+"detail": ""
+},
+{
+"n": 9,
+"symptom": "Skeleton loaded, animation clock ran, still a T-pose",
+"cause": "the attachment filter copied each part's private skeleton, so skinned parts bound to bones that were not animated; separately the donor looked bones up by Morrowind names that Oblivion's skeleton lacks.",
+"fix": "copy the renderable's local subtree so parts resolve the actor's animated bones; list the skeleton's node names before assuming a mapping (EXP-OO-012).",
+"detail": ""
+},
+{
+"n": 10,
+"symptom": "The same configuration gave different numbers in different runs",
+"cause": "run-to-run variation in the probe (box-body ascent variation 2,379 versus 2,128; the real-ascent raw baseline 1206.7 in one series and 1321.4 in another).",
+"fix": "compare rows produced by the same binary in the same series, change one thing per experiment, and record the metric's name with every number.",
+"detail": ""
+}
+],
 "source": "local"
 },
 {
@@ -82,10 +306,99 @@
 "Claude Code (Opus 5.5)"
 ],
 "date": "2026-10-05",
-"tags": [],
+"tags": [
+"openmw",
+"lua",
+"scripting",
+"dialogue",
+"quests",
+"speedtree",
+"android",
+"touch-ui"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/openoblivion-port-lessons-scripts-dialogue-trees.md",
 "summary": "What a 1:1 Android port of Oblivion on a patched OpenMW needed for trees, quests/journal, spoken conversations, object scripts and always-closable menus, with the bugs that cost time. Verified on desktop probes and CI; phone confirmation of 0.40-0.44 was pending when written.",
+"verification": "Compiler statement-level opcode sequence equals the bytecode's for all 7,945 scripts with both source and bytecode (two differ: their source lacks an End/Endif); fixtures for compiler, runtime and dialogue run in CTest; end-to-end on the real master with a mock world (starting a new game chains quest stages with journal text); desktop probes screenshot the conversation window and journal. **Not verified**: phone behaviour of 0.40-0.44, voice playback audibility, trunk collision, rule guesses above.",
 "gotchas": 11,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "Generated Lua was invalid for unclosed or stray `If/Else/Endif`",
+"cause": "scripts whose source lacks an End/Endif.",
+"fix": "stack-guard blocks with `[kind, else_seen]` and close implicitly.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "Dialogue condition groups misbehaved at the end of a list",
+"cause": "trailing OR.",
+"fix": "an explicit `open` flag on the group.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "FormIDs did not match across files",
+"cause": "load-order byte in the high byte.",
+"fix": "`% 0x1000000` before comparing.",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "Command parameter types mismatched at compile time",
+"cause": "a second, hand-written table disagreed with the extractor's output.",
+"fix": "use the committed extractor output only.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Android build error returning a shared_ptr where an `osg::ref_ptr` was expected",
+"cause": "",
+"fix": "`return {};` in the patch.",
+"detail": "Fix: `return {};` in the patch."
+},
+{
+"n": 6,
+"symptom": "Desktop probe lost overlay scripts when positioning the player",
+"cause": "the start-position script teleported.",
+"fix": "skip the teleport when a start-override module is present.",
+"detail": ""
+},
+{
+"n": 7,
+"symptom": "Probe screenshots taken before the UI existed",
+"cause": "",
+"fix": "guard on `not config.ui` timing.",
+"detail": "Fix: guard on `not config.ui` timing."
+},
+{
+"n": 8,
+"symptom": "xdotool clicks failed in the probe container",
+"cause": "missing `XAUTHORITY`.",
+"fix": "set it; poll container logs instead of waiting for a stdout file written at the end.",
+"detail": ""
+},
+{
+"n": 9,
+"symptom": "Phone user could not close the journal",
+"cause": "unconfirmed (22 px \"Close\" text easy to miss on touch).",
+"fix": "BACK button in the touch overlay while any menu is open (sends Escape), Android back key closes menus first, big Close/Goodbye buttons, tap on any unused part of the page closes it, and `OPENOBLIVION_UI tap` logging to separate \"tap never arrived\" from \"tap did nothing\".",
+"detail": ""
+},
+{
+"n": 10,
+"symptom": "A patch script clobbered pristine copies",
+"cause": "",
+"fix": "generate patches from `trees/KIND/a` copies, never overwrite the pristines.",
+"detail": "Fix: generate patches from `trees/KIND/a` copies, never overwrite the pristines."
+},
+{
+"n": 11,
+"symptom": "Trees invisible",
+"cause": "OpenMW ignores `.spt` SpeedTree files.",
+"fix": "a `tes4_trees` receipt turns `.spt` into two crossed billboard quads sized from the TREE record's billboard width/height, with `simpleLighting`; pitfall: `SceneUtil::Material` versus `osg::Material` differ between pins.",
+"detail": ""
+}
+],
 "source": "local"
 },
 {
@@ -105,10 +418,63 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"android",
+"adb",
+"tailscale",
+"termux",
+"wireless-debugging",
+"tcpip",
+"device-testing"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/adb-over-tailscale-from-a-build-host.md",
 "summary": "No USB cable and no shared Wi-Fi needed: pair the phone with itself in Termux, switch its adbd to TCP 5555, and `adb connect` to the phone's Tailscale address from the build host. Measured on a Galaxy S24+ (Android 16): 23 ms round trip on a direct tailnet path, about 6 MB/s for a 292 MB `adb install`.",
+"verification": "Worked end to end in one session: connect, `adb install -r` of a 292 MB APK, launching, `screencap`, `logcat`, `input tap` and `input keyevent`, `run-as` on a debuggable build. Not verified: how long `tcpip` mode survives a Wi-Fi change (expect it to end), other Android versions or OEM skins, running without Termux (for example Shizuku).",
 "gotchas": 6,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "`failed to authenticate` / `unauthorized` right after `adb connect`",
+"cause": "the phone's key prompt is waiting.",
+"fix": "accept the prompt on the phone, then run `adb connect` again.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "`adb pair` is refused or times out",
+"cause": "the pairing code or port changed (they are single use and expire when the dialog closes).",
+"fix": "reopen \"Pair device with pairing code\" and use the new values; pairing and connect use different ports.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Connection drops after a reboot or Wi-Fi switch",
+"cause": "`adb tcpip` is not persistent.",
+"fix": "repeat step 3 (the owner must do it; the agent cannot).",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "A bare `adb install` goes to the wrong device",
+"cause": "with one device attached adb picks it silently, and the phone may be that device.",
+"fix": "always pass `-s`; when the owner pauses phone testing, run `adb disconnect` at once.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "A lock screen blocks input tests",
+"cause": "`input` events do not unlock.",
+"fix": "ask the owner to set a long screen timeout for the test session, or to unlock; never store a PIN they share in notes or files, and suggest they change it afterwards.",
+"detail": ""
+},
+{
+"n": 6,
+"symptom": "Android 16 shows two dialogs on launch of a sideloaded build",
+"cause": "a debuggable APK and native libraries that are not 16 KB aligned.",
+"fix": "informational; ship a release-style build with 16 KB-aligned libraries to remove them.",
+"detail": ""
+}
+],
 "source": "local"
 },
 {
@@ -128,10 +494,90 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"android",
+"emulator",
+"x86_64",
+"arm64",
+"gl4es",
+"gles",
+"egl",
+"openmw",
+"sdl2",
+"adb",
+"ndk",
+"deadlock",
+"device-gate"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/android-emulator-testing-of-arm64-native-ports.md",
 "summary": "If an Android port ships only arm64 libraries and renders through GL4ES/GLES, the stock x86_64 emulator crashes in Google's ARM translation layer. Build the same source for x86_64, add `lib/x86_64` to a copy of the APK, and drive it with a scripted adb gate. Doing this also exposed a real start-up deadlock between GL4ES's load-time `eglGetDisplay` and the UI RenderThread.",
+"verification": "Measured on an Android 16 (API 36) google_apis x86_64 emulator with host GPU: arm64 build crashed at scene start on Android 14 and 16, host GPU and software; x86_64 build starts, renders and passes a six-check gate (launcher ready, engine thread started, 20 s stable, drawn frame, menu opens, system BACK closes it). Start-up deadlock: 3 of 4 launches hung before the fix, 5 of 5 started after it (small sample). Not verified: the deadlock on real phones (EGL starts faster there; the race is plausible but unobserved), any arm64-specific behaviour, performance.",
 "gotchas": 9,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "SIGSEGV at scene start, fault address 0, frame in `libndk_translation_proxy_libGLESv2.so` (Android 14) or `berberis::TrampolineFuncGenerator<unsigned int ()>` (Android 16)",
+"cause": "the translation layer's GLES proxy exposes entry points the emulator's GPU library does not implement, so a call target is null; GL4ES reaches it during init. Host GPU vs software rendering makes no difference, and a newer image did not fix it.",
+"fix": "do not chase the function; run a native x86_64 build.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "Process alive, 0% CPU, window list shows only the system \"Splash Screen\", log stops right after the activity's `onCreate`, \"Launch timeout has expired\"",
+"cause": "lock-order deadlock. The main thread is inside `dlopen` of the GL4ES library (linker lock held) whose constructor calls `eglGetDisplay`, which waits for libEGL's driver-init mutex; the UI RenderThread holds that mutex while loading the driver and needs the linker lock (`dlsym`). Slow emulator EGL start makes it likely.",
+"fix": "call `EGL14.eglGetDisplay(EGL_DEFAULT_DISPLAY)` on the main thread before the first `System.loadLibrary`.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "`configure: error: no nasm` building libjpeg-turbo for x86_64",
+"cause": "SIMD needs NASM and the host has none.",
+"fix": "configure `--without-simd` (slower JPEG decode, nothing else changes) or install nasm.",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "FFmpeg configure: `unknown target CPU 'intel'`, \"C compiler test failed\"",
+"cause": "an old `-march=intel` in the donor script.",
+"fix": "`x86-64`.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "System BACK key does nothing in an SDL activity",
+"cause": "SDLActivity forwards the key to the engine and consumes it, so `onBackPressed` never runs.",
+"fix": "override `dispatchKeyEvent`, handle `KEYCODE_BACK` on ACTION_DOWN, consume the matching ACTION_UP, otherwise call super.",
+"detail": ""
+},
+{
+"n": 6,
+"symptom": "First launch shows a \"Viewing full screen\" dialog that holds window focus",
+"cause": "Android's one-time immersive-mode notice.",
+"fix": "tap \"Got it\" (found with `uiautomator dump`); it does not return after confirmation.",
+"detail": ""
+},
+{
+"n": 7,
+"symptom": "Reinstall wipes a large data payload",
+"cause": "`adb install -r` over a build signed with a different key fails, and uninstall deletes app data.",
+"fix": "always sign emulator APKs with the same debug key so `-r` keeps the extracted payload.",
+"detail": ""
+},
+{
+"n": 8,
+"symptom": "Scripts reach the wrong device",
+"cause": "a bare `adb` command uses the only connected device, which may be the owner's phone.",
+"fix": "always `-s SERIAL`, disconnect phones, and make the script refuse non-`emulator-` serials by default.",
+"detail": ""
+},
+{
+"n": 9,
+"symptom": "Shell helper breaks under zsh",
+"cause": "`E=\"adb -s emu\"; $E shell ...` is not word-split in zsh, and `pgrep -f` matches the shell's own command line.",
+"fix": "use a function (`a() { adb -s emu \"$@\"; }`) and check logs or `pidof` instead of `pgrep -f`.",
+"detail": ""
+}
+],
 "source": "local"
 },
 {
@@ -151,10 +597,58 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"review",
+"planning",
+"port",
+"openmw",
+"android",
+"coverage",
+"call-sites",
+"documentation",
+"process"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/reviewing-an-inflight-game-port.md",
 "summary": "A week-old, fast-moving port (OpenMW-based reimplementation of a 2006 RPG for Android) had good evidence discipline and still stalled on five structural problems. Each had a cheap measurement that turned an opinion into a number. Use the list on any port or decomp that has outgrown its first plan.",
+"verification": "Every number above was measured from the repository, the packaged APK and the owner's local data on 2026-10-06 and is recorded with sources in the project's review document. Judgement calls (which phase first) are labelled as such there. Not verified: that the proposed phases fit the effort estimates.",
 "gotchas": 5,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "A \"new finding\" that the repository already contains",
+"cause": "claiming a result (here: that game-setting defaults would settle movement speed) without searching the project's own docs first. The formula had been decoded earlier.",
+"fix": "grep the repository's research notes for the topic before writing a finding; correct the claim everywhere it was repeated (docs, skill text, memory) as soon as it is wrong.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "Counting commands instead of call sites",
+"cause": "a flat count treats a command used once like one used 3,000 times.",
+"fix": "weight by occurrences in the real corpus.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Running tests the wrong way",
+"cause": "the project's test scripts take CMake-style arguments (the repository root); bare invocations fail with confusing errors.",
+"fix": "read how CI invokes them and copy that.",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "A tool that quietly overwrites repository edits",
+"cause": "a publish script copied files out of an installed location into the repository.",
+"fix": "make the repository the source of truth and copy outward only.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Search that returns plausible but irrelevant notes",
+"cause": "BM25 on short queries matches common words.",
+"fix": "stopwords for filler terms and a minimum share of query terms matched.",
+"detail": ""
+}
+],
 "source": "local"
 },
 {
@@ -174,10 +668,65 @@
 "Claude Code (Sonnet 5.5)"
 ],
 "date": "2026-10-06",
-"tags": [],
+"tags": [
+"pe",
+"rtti",
+"vtable",
+"signatures",
+"aob",
+"string-xrefs",
+"static-analysis",
+"x86",
+"x64"
+],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/static-recon-of-msvc-game-executables.md",
 "summary": "Four dependency-free scripts that triage a PE, recover C++ class names and inheritance from MSVC RTTI, find the code that references a string, and build version-robust byte signatures. Verified on x86 (Oblivion.exe, GoldSrc engine DLL) and x64 (a Unity player DLL, Unreal executables) binaries.",
+"verification": "Cross-checks: RTTI base lists agree with known hierarchies; string xrefs resolve to plausible functions; signatures are unique on the build they came from. Timings: 0.08-0.28 s per binary for RTTI. Not verified: Windows paths, 32-bit-only edge cases like MI with virtual bases, binaries with stripped or `/GR-` builds (they simply return nothing).",
 "gotchas": 6,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "No RTTI found",
+"cause": "`/GR-`, stripped, or non-MSVC (GCC uses a different RTTI).",
+"fix": "say so; fall back to strings and constructors.",
+"detail": ""
+},
+{
+"n": 2,
+"symptom": "x86 locator scan matches garbage",
+"cause": "a dword equal to a descriptor VA by chance.",
+"fix": "require signature 0, small offset fields, a class-hierarchy pointer inside the image, and a vftable reference.",
+"detail": ""
+},
+{
+"n": 3,
+"symptom": "Pointer-heuristic false positives in signatures",
+"cause": "immediates that resemble in-image pointers.",
+"fix": "harmless for uniqueness (they only widen wildcards), but re-test uniqueness with `find`.",
+"detail": ""
+},
+{
+"n": 4,
+"symptom": "Function start guessed wrong",
+"cause": "padding-run heuristic.",
+"fix": "confirm a prologue (`55 8B EC`, `6A FF` for SEH) or use a disassembler's function boundary.",
+"detail": ""
+},
+{
+"n": 5,
+"symptom": "Rich header product ids look unfamiliar",
+"cause": "id tables are long and version-specific.",
+"fix": "rely on the build number (e.g. 8168 = VC6 RTM, 3077 = 7.1, 50727 = VS2005) and confirm against the project's compiler.",
+"detail": ""
+},
+{
+"n": 6,
+"symptom": "Wrapped executables",
+"cause": "protection stub with a high-entropy entry section.",
+"fix": "analyse only the readable sections; never attempt removal.",
+"detail": ""
+}
+],
 "source": "local"
 }
 ]

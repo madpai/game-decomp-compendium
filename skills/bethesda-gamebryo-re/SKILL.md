@@ -1,6 +1,6 @@
 ---
 name: bethesda-gamebryo-re
-description: Reverse-engineering and format knowledge for Bethesda's Gamebryo/Creation games, centred on TES IV Oblivion (and useful for Morrowind, Fallout 3/NV, Skyrim, Fallout 4, Starfield): ESM/ESP record layout, BSA/BA2 archives, the TES4 script bytecode and command table, dialogue/quest/INFO/CTDA rules, voice file naming, Gamebryo/Ni* class map from RTTI, SpeedTree, NIF, load order, tools (xEdit, CK, MO2, esplugin, bsa-rs, OBSE/xNVSE/SKSE) and the OpenOblivion port's verified findings. Use for any Oblivion/OpenMW/OpenOblivion task, parsing plugins or archives, compiling or running TES4 scripts, dialogue or quest behaviour, mapping engine classes, or modding Bethesda games. Includes facts measured on the real Oblivion.esm/Oblivion.exe and where each came from.
+description: Reverse-engineering and format knowledge for Bethesda's Gamebryo/Creation games, centred on TES IV Oblivion (and useful for Morrowind, Fallout 3/NV, Skyrim, Fallout 4, Starfield): ESM/ESP record layout, BSA/BA2 archives, the TES4 script bytecode and command table, dialogue/quest/INFO/CTDA rules, voice file naming, Gamebryo/Ni* class map from RTTI, SpeedTree, NIF, load order, tools (xEdit, CK, MO2, esplugin, bsa-rs, OBSE/xNVSE/SKSE), Havok/Gamebryo physics (bhk* collision blocks, MOPP, tri-strips, layers, the player controller hull, stairs, translating to Bullet) and the OpenOblivion port's verified findings. Use for any Oblivion/OpenMW/OpenOblivion task, parsing plugins or archives, compiling or running TES4 scripts, dialogue or quest behaviour, mapping engine classes, collision or player-movement problems, or modding Bethesda games. Includes facts measured on the real Oblivion.esm/Oblivion.exe and where each came from.
 ---
 
 # Bethesda / Gamebryo reverse engineering
@@ -21,10 +21,15 @@ Start every Bethesda task with `python3 ../gamedecomp-library/scripts/hub.py pri
 | Parse or build BSA (v103/104/105) and BA2 | `references/tes4-formats.md` (BSA section) and the `ba2` crate (0BSD) |
 | Engine class map, vtable counts, where features live in the exe | `references/engine-classes-and-exe.md` |
 | What the OpenOblivion port decided, which rules are verified vs guesses | `references/openoblivion-findings.md` |
+| Havok in Gamebryo: bhk* blocks, MOPP, tri-strips, units (x7 per shape class), layers/materials, authored vs render collision | `references/havok-gamebryo-collision.md` |
+| Player controller (hull, not capsule), stairs and steps, gait, camera jolt, symptom -> first checks, oracles | `references/character-controller-and-stairs.md` |
+| Translating Havok-facing semantics to Bullet or another backend: what to preserve vs implementation detail | `references/physics-backend-translation.md` |
 | Tools and ecosystem (xEdit, CK, MO2, LOOT, extenders, Rust crates, OpenMW), licences | `references/tools-and-ecosystem.md` |
 | Trace a behaviour in the original exe | `re-binary-recon` (string -> function, RTTI anchors) |
 | Game settings (GMST) missing from the master: recover built-in defaults from the exe | `scripts/gmst_defaults.py` (see `references/engine-classes-and-exe.md`) |
 | Hook the running game (offline, single player) | `game-hooking-patterns` (OBSE/xNVSE/SKSE route) |
+
+Physics and movement questions: start with `hub.py diagnose "<symptom>"` and `hub.py tried "<idea>"` (experiments EXP-OO-001 to EXP-OO-014 record what worked and what failed), then the three references above. The goal is the *subset of Havok-facing semantics that gameplay needs*, not Havok; every claim there carries an evidence tag and a scope.
 
 ## Working method for engine-behaviour questions
 1. Find the data that drives it (record types, fields) and measure it over the whole file (counts, value ranges, rare cases). Assertions over every record beat reading five examples.

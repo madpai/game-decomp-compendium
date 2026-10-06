@@ -1,0 +1,737 @@
+{
+"meta": {
+"source": "https://github.com/madpai/game-decomp-compendium",
+"license": "MIT"
+},
+"experiments": [
+{
+"id": "EXP-BW1-001",
+"title": "Sweep compiler knobs to fix a matching residual that is an MSVC 6 inliner tie-break",
+"project": "bw1-decomp",
+"result": "failed",
+"level": "documented",
+"why_level": "documented",
+"scope": "project",
+"status": "final",
+"date": "2026-10-06",
+"agents": [
+"Claude Code (Sonnet 5.5), from the BW1 project's AGENTS.md at the cited revision"
+],
+"about": [
+"problem:compiler-tiebreak-mismatch",
+"subsystem:matching-decomp",
+"compiler:msvc",
+"game:black-and-white"
+],
+"games": [
+"game:black-and-white"
+],
+"tags": [
+"matching-decomp",
+"msvc6",
+"tie-break",
+"inline-budget",
+"fakematch",
+"sweep"
+],
+"related": [],
+"supersedes": "",
+"path": "experiments/exp-bw1-001-compiler-flag-sweep-for-tiebreak-residual.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-bw1-001-compiler-flag-sweep-for-tiebreak-residual.md",
+"sections": {
+"Symptom": "A function still differs from the target object code after rewrites, and the only remaining difference is the operand order of equal-cost x87 operations inside inlined bodies (or swapped registers).",
+"Hypothesis": "A different compiler flag, build knob or source phrasing produces the target order, and a large sweep over knobs will find it.",
+"Environment": "The Black & White decompilation (MSVC 6 `c2.dll`, dtk and objdiff). Recorded from the project's AGENTS.md at revision be339126394b6fe35699f75b1d300623188b1628 (2026-10-06) and paraphrased; not reproduced here.",
+"Change": "Sweeping build knobs and rewrite variants. The project's text cites a 5,000-build sweep over knobs that never touch the differing instructions as what this costs.",
+"Oracle": "objdiff per-symbol match, and the project's `tiebreak-probe.py --dummies` batch, in which some counts of unused locals match and others do not.",
+"Result": "Failed, as the maintainers record it: a sweep over knobs that never touch the differing instructions finds nothing, and the residual turns out to be a `c2` tie-break.",
+"Why": "The order of equal-cost operands inside inlined bodies depends on how much intermediate code the inliner has built earlier in the same function, not on anything the source means. Reverse-engineering the compiler's tie-break rule has not paid off. (Documented by the BW1 maintainers; not independently checked.)",
+"Next": "Classify the difference before experimenting (real source difference, tie-break or scheduling, inline budget, naming, layout, hand-written asm). Prove that a knob moves the output before sweeping it, bound the search, and when only an equal-cost operand-order residual is left, leave the function non-matching with a TODO or ask the human whether to accept a fakematch.",
+"Unverified": "Not reproduced by this repository; specific to MSVC 6 and BW1's tooling; other compilers' tie-break behaviour not covered."
+}
+},
+{
+"id": "EXP-OO-001",
+"title": "Lua onFrame grounded-eye filter against the per-tread camera jolt on stairs",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-01",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs and private metrics"
+],
+"about": [
+"subsystem:camera",
+"subsystem:player-controller",
+"engine:openmw",
+"problem:stair-camera-jolt",
+"technique:paired-same-binary-probe"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"stairs",
+"camera",
+"smoothing",
+"lua",
+"onFrame",
+"eye-height",
+"regression"
+],
+"related": [
+"EXP-OO-002"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-001-lua-onframe-grounded-eye-filter.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-001-lua-onframe-grounded-eye-filter.md",
+"sections": {
+"Symptom": "Owner feedback on the phone build 0.3: walking, stopping, collision, jumping and look work, and stair ascent and descent work, but each tread produces an uncomfortable vertical view jolt (the camera bounces or shakes) in both directions. An earlier answer about \"catching and slowing\" was superseded by this clarification, so the physical traversal was not the defect.",
+"Hypothesis": "The jolt is the camera following the player root through discrete tread rises. A bounded, exponentially smoothed vertical eye offset (100 ms response, lag capped at 48 units, reset on jump, airborne, swimming, cell change, large position change, pause and long frame gaps), applied only while grounded and only for the missing-head fallback camera, would remove the jolt without touching player motion. Implemented in Lua in the `onFrame` hook.",
+"Environment": "OpenOblivion desktop probe, OpenMW 0.52 pin, software GL, same binary and the same scripted controls driver for raw and filtered runs. Two routes: the generated stair fixture (twenty 16-unit rises, 24-unit treads) and the real Vilverin entrance stairs. Metric: view (camera) vertical-velocity variation, lower is smoother, plus the walking-response, stopping and jump/landing gates. Run on 2026-10-01; numbers come from private evidence runs named `original-stair-*-04b` and `player-entrance-stairs-*-04`.",
+"Change": "An opt-in Lua filter adding a bounded vertical focal offset in `onFrame`. Player position, movement commands, look and the native camera collision tests were not modified. Excluded from the phone packager.",
+"Oracle": "Paired raw and filtered runs of one binary and one driver, with the movement gates still required to pass. The comparison metric is view vertical-velocity variation. Raw baselines differ between runs (the real ascent baseline was 1206.7 here and 1321.4 in the later native comparison), so compare rows and not single digits.",
+"Result": "Mixed, and the real-stairs result decided it. Improved: generated fixture ascent 2214.5 to 484.6 and descent 2092.4 to 449.6 (about -78%), real Vilverin descent 2414.0 to 704.3 (-71%). Regressed: real Vilverin ascent 1206.7 to 3008.3 (+149%, worse than no filter). The filter was withheld from phone QA; the private experimental 0.4 APK was not deployed, and the owner's later liking of the 0.5 stairs must not be attributed to this experiment.",
+"Why": "Inferred, not isolated. The engine invokes Lua `onFrame` before physics and before the camera update (read from the donor engine), so a height correction computed there can arrive out of phase with the solved step; that fits the increased ascent variation. It does not explain why real descent improved while real ascent regressed. No run changed only the timing: the native version in EXP-OO-002 differs in language and placement, so the phase explanation is the best fit, not an established cause.",
+"Next": "Apply the correction after physics inside the native camera position update and compare with the same paired probe (EXP-OO-002). To isolate timing from implementation, also try the Lua filter from a post-physics hook if the donor exposes one, or the C++ filter pre-physics. Do not re-run this variant on phones: a synthetic stair fixture passing is not evidence for the real stairs.",
+"Unverified": "That phase is the cause; why descent improved; any phone perception of this variant (it never shipped); other frame rates; other staircases than the fixture and Vilverin's entrance."
+}
+},
+{
+"id": "EXP-OO-002",
+"title": "Native post-physics camera smoothing for the per-tread stair jolt",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-01",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs and private metrics"
+],
+"about": [
+"subsystem:camera",
+"engine:openmw",
+"problem:stair-camera-jolt",
+"technique:paired-same-binary-probe",
+"technique:hash-locked-receipts"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"stairs",
+"camera",
+"smoothing",
+"native",
+"post-physics",
+"eye-height"
+],
+"related": [
+"EXP-OO-001"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-002-native-post-physics-camera-smoothing.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-002-native-post-physics-camera-smoothing.md",
+"sections": {
+"Symptom": "The same per-tread vertical view jolt as EXP-OO-001, after the Lua `onFrame` filter regressed the real Vilverin ascent.",
+"Hypothesis": "The same bounded smoothing, sampled from the tracked actor root inside the camera position update (after physics and world transforms) and applied before the original focal and camera sphere casts, removes the jolt on both directions without the real-ascent regression, because it consumes the position the camera actually uses.",
+"Environment": "A small audited camera patch (carried as a hash-locked receipt) in an external integration checkout of the OpenMW 0.52 pin. An environment switch enables it only for zero-distance actor-root views. The same integrated binary was run with smoothing on and off, with the same controls driver and start placement, on the generated 20-step fixture and on the real Vilverin entrance stairs, 2026-10-01 (private evidence `native-*-05`). Metric: view vertical-velocity variation.",
+"Change": "The filter reimplemented in C++ at the post-physics point described above. Player position, movement commands, look and the native camera collision tests are unchanged.",
+"Oracle": "Paired same-binary runs (raw versus native) with the walking-response, stopping and jump/landing gates required to pass, plus controls: healthy first-person tracking (the filter must not activate), look, wall, ceiling and ramp fixtures, and a C++ trajectory suite of 3,817 assertions across stair directions, frame cadences, ramp response and transition resets.",
+"Result": "Improved on every route: generated ascent 2347.48 to 528.79 (-77.5%), real Vilverin ascent 1321.40 to 535.69 (-59.5%), real Vilverin descent 2266.39 to 546.82 (-75.9%). Walking ratios stay near 1 (uphill 1.009 raw and 1.016 native, downhill 0.995 and 0.994). The real ascent shows none of the earlier Lua regression. The owner, on build 0.5-native-stairs, describes the stairs as very smooth with a liked subtle stepping: qualitative feedback, not a timed corpus.",
+"Why": "Inferred. This is consistent with the phase explanation in EXP-OO-001 (the correction now follows the solved step), but the Lua and C++ versions differ in more than timing, so the timing effect is not isolated.",
+"Next": "Keep this 0.5 filter as the stair comparison baseline. Re-run the same paired probe after any body, collision or step-constant change (EXP-OO-003, EXP-OO-006) because they change the tread response. Add Android frame-cadence checks and a perceptual comparison.",
+"Unverified": "Perceived comfort (variation is not a comfort score); Android performance and cadence; whether the filter suits first-person with a healthy head bone (it is only enabled for the actor-root fallback camera); that timing is the only difference from EXP-OO-001."
+}
+},
+{
+"id": "EXP-OO-003",
+"title": "Translate authored Havok strip collision (MOPP over tri-strips) into the donor's Bullet world",
+"project": "openoblivion",
+"result": "partial",
+"level": "verified",
+"why_level": "inferred",
+"scope": "build",
+"status": "final",
+"date": "2026-10-01",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:collision",
+"struct:bhkMoppBvTreeShape",
+"struct:bhkNiTriStripsShape",
+"struct:bhkRigidBody",
+"tech:bullet",
+"engine:openmw",
+"technique:authored-collision-translation",
+"problem:tes4-collision-fidelity"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"collision",
+"havok",
+"mopp",
+"tristrips",
+"bullet",
+"stairs",
+"authored-collision"
+],
+"related": [
+"EXP-OO-004",
+"EXP-OO-006"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-003-authored-collision-translation.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-003-authored-collision-translation.md",
+"sections": {
+"Symptom": "The donor engine builds Oblivion collision from the visible render geometry and ignores the authored Havok blocks. Stairs may therefore snag differently from the original, and speed tuning was blocked. The working suspicion (an inference, not a measurement) was that the render mesh is denser than the Havok mesh and has no stair layer.",
+"Hypothesis": "Importing the triangles of the authored `bhkMoppBvTreeShape` over `bhkNiTriStripsShape` for fixed `OL_STATIC` bodies gives a surface closer to the original's, without executing MOPP or shipping Havok's cooker.",
+"Environment": "Six stair NIFs of the owner's Vilverin visual slice (version 20.0.0.4, user version 10 or 11). Loader behind `OPENOBLIVION_AUTHORED_COLLISION=1`, built into the desktop OpenMW 0.52 pin (double-precision Bullet, in a container) and compiled for the Android 0.51 base. Accepted bodies: root `bhkCollisionObject`, fixed and quality-fixed, layer `OL_STATIC` on both the world and body filters, MOPP over strips or strips directly, strip and MOPP scale 1, identity root transform; everything else keeps the render-mesh fallback.",
+"Change": "A bounded static loader: triangles built in stored units and added as one compound child at the origin, the rigid-body translation not applied, MOPP bytes unused, degenerate strip steps omitted the way the render path omits them. The player body, the 34/62 step constants and the camera filter were unchanged.",
+"Oracle": "Bullet triangle counts and AABBs with the switch on and off for each mesh, and a 20 by 20 downward ray grid on each shape's AABB, paired where the AABBs match. A character-controller stair trace was not part of this experiment.",
+"Result": "The loader works and the surfaces differ. Bullet triangle counts, authored versus render: 213 and 866, 165 and 700, 1,522 and 4,632, 575 and 1,486, 751 and 2,066, 268 and 756 across the six meshes. AABBs match on four of six. On `arwhallstairs01` 245 rays hit both shapes with a median absolute height difference of 2.32 units (188 rays differ by more than 1, 19 by more than 16, maximum 372.7); the bridge median is 2.44, `arnhallstairs01` 0.55, the entrance and pit 0. No movement trace and no owner report on the 0.9 package (which carries the switch) existed when this was recorded, so the effect on stair feel is unknown. The owner's liked 0.5 feel was camera smoothing on top of the render-mesh surface.",
+"Why": "Partial because a surface comparison is not a movement comparison. The body was still the template box with Morrowind step constants, so any movement difference could not be attributed to the collision surface. That authored collision has about half the render triangles is measured; that this explains tread snags is inferred.",
+"Next": "Repeat the stair traces with the measured player hull on both surfaces (EXP-OO-006), and collect the owner's 0.9 stair report. Extend the loader to packed strip shapes only when a mesh outside this slice needs them.",
+"Unverified": "Any effect on character movement; non-fixed bodies (keyframed doors, clutter); other meshes, other games and the Fallout 3 or Skyrim block variants; equivalence of MOPP-culled Havok queries with the full triangle set."
+}
+},
+{
+"id": "EXP-OO-004",
+"title": "Apply the Havok vertex scale factor of 7 to bhkNiTriStripsShape vertices",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "verified",
+"scope": "build",
+"status": "final",
+"date": "2026-10-01",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"struct:bhkNiTriStripsShape",
+"struct:bhkPackedNiTriStripsShape",
+"struct:bhkBoxShape",
+"tech:havok",
+"subsystem:collision"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"havok",
+"scale",
+"units",
+"tristrips",
+"niftools"
+],
+"related": [
+"EXP-OO-003"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-004-havok-scale-7-on-strip-vertices.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-004-havok-scale-7-on-strip-vertices.md",
+"sections": {
+"Symptom": "The collision unit scale of the stair meshes was unknown. Open-source NIF tooling documents a factor of 7 for packed Havok vertices, so strip-shape vertices were expected to need it too.",
+"Hypothesis": "Collision vertices of these NIFs are stored in Havok units and must be multiplied by 7 to reach game units, as for packed shapes.",
+"Environment": "The six Vilverin stair NIFs, OpenMW 0.52 reader. Collision AABB compared with the visible-mesh AABB per axis.",
+"Change": "Multiply the `bhkNiTriStripsShape` vertices by 7 before building the collision mesh.",
+"Oracle": "Per-axis bounds: the collision of a stair should have about the extents of its visible mesh; a wrong scale shows as a constant ratio.",
+"Result": "Failed: with the factor the collision came out about seven times too large. Unscaled, the bounds match the visible mesh on every axis for four of the six meshes (the U-turn and pit meshes differ by a few percent because their collision mesh is simply not the render mesh). The MOPP scale is 1 and the strip shape scale is (1, 1, 1, 0).",
+"Why": "The vertices of `bhkNiTriStripsShape` live in the referenced `NiTriStripsData`, already in mesh units. The factor belongs to the packed Havok vertex layout and to native primitives (box half-extents did need it: on the hall gate, half-extents times 7 reproduce the visible slabs). The scale depends on the shape class, not on the file or the game.",
+"Next": "Choose the scale per shape class: strips times 1 (check the scale fields), box half-extents times 7 (verified on the gate), packed strips times 7 only after measuring one real mesh, convex vertices and capsules unmeasured. Never apply a scale because \"Havok data is scaled\"; compare bounds first.",
+"Unverified": "Packed strip shapes (zero blocks in this slice), convex vertices and capsule shapes, other games and builds."
+}
+},
+{
+"id": "EXP-OO-005",
+"title": "Swap in the measured pointed player hull without changing the donor's ground solver",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:player-controller",
+"struct:bhkCharacterController",
+"engine:openmw",
+"tech:bullet",
+"problem:tes4-movement-parity"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"player-body",
+"hull",
+"stairs",
+"solver",
+"stair-hack",
+"step-down"
+],
+"related": [
+"EXP-OO-006"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-005-measured-hull-without-solver-change.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-005-measured-hull-without-solver-change.md",
+"sections": {
+"Symptom": "After the original controller's hull was measured (an eight-sided prism with pointed cones at both ends, radius 20.25, height 128), the first port build used that hull as the player body and left the host solver alone. On the original 20-step stair fixture the player climbed far faster than the requested walking speed.",
+"Hypothesis": "Replacing the template box with the measured hull is enough to approach the original's stair contact, because shape was the known difference.",
+"Environment": "OpenOblivion body receipt (`OPENOBLIVION_ORIGINAL_BODY=1`) applied to the donor's actor, stepper and movement solver in the desktop OpenMW 0.52 pin; original generated stair fixture; software GL, one async physics worker; run 2026-10-03 (private development runs `tes4-body-stairs-hull-01/02`).",
+"Change": "Player collision shape replaced by the measured hull with its convex radius as the Bullet margin. Solver, step constants (34 up, 62 down), gravity, speeds and the camera filter unchanged.",
+"Oracle": "Distance ratio (distance travelled over requested distance) and vertical speed on the stair fixture; a healthy run is near 1.",
+"Result": "Failed: the player climbed at 440 to 480 units/s, a distance ratio of 1.42, instead of walking speed. This was a rejected development build, never shipped.",
+"Why": "Inferred. A cone's contact with a tread edge is steeper than the walkable limit, so the solver's normal step-down test fails and the inherited Morrowind \"extra stair hack\" then moves the body 10 units per frame. The fix in EXP-OO-006, which removes the effect by changing only how walkability is judged, supports this explanation but does not isolate it.",
+"Next": "Judge walkability for the hull from the support point beneath its centre instead of the contact normal (EXP-OO-006). General lesson: when porting a character shape, port the ground-test semantics with it. A pointed shape resting on tread edges is walkable by support point, not by contact normal.",
+"Unverified": "The original controller's own stepping and slope rules; whether the stair hack alone accounts for the whole speed-up; behaviour on other staircases."
+}
+},
+{
+"id": "EXP-OO-006",
+"title": "Measured hull plus walkability judged from the support point under the hull centre",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:player-controller",
+"struct:bhkCharacterController",
+"engine:openmw",
+"tech:bullet",
+"technique:paired-same-binary-probe",
+"problem:tes4-movement-parity"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"player-body",
+"hull",
+"stairs",
+"walkability",
+"support-point",
+"vilverin"
+],
+"related": [
+"EXP-OO-005",
+"EXP-OO-003",
+"EXP-OO-002"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-006-hull-with-support-point-walkability.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-006-hull-with-support-point-walkability.md",
+"sections": {
+"Symptom": "The hull-only build (EXP-OO-005) made the player climb at about 1.4 times the requested distance because the cone's tread-edge contact failed the donor's walkable-normal test.",
+"Hypothesis": "The original's own contact manifold reports a horizontal support plane directly beneath the hull apex while a second, steep contact touches the cone face. Judging walkability from the surface under the hull centre, as the original appears to, should give ramp-like stair motion without the stair hack firing.",
+"Environment": "Same recorded desktop binary for every row, software GL, one async physics worker, the Android player model and settings rewrite, 2026-10-03 (private evidence `tes4-body-final-*`). Metric: `walk_player_vertical_velocity_variation` (lower is smoother) plus the walk, stop and jump gates.",
+"Change": "For the hull only: walkability is judged from the surface directly beneath the hull centre, in the stepper's step-down test and the solver's ground test. Missing support, or support beyond the apex plus the 34-unit step reach, falls back to the contact normal. Step constants 34 and 62, gravity, speeds and the camera filter are unchanged.",
+"Oracle": "Same-binary rows, template box against measured hull. Also the original's own Z(Y) height samples on the Vilverin stairs, a low-ceiling fixture, a ramp, a wall (must block), and the gate closed/open/closed ray hits.",
+"Result": "Worked on desktop. Variation, box then hull: generated ascent 2,127.6 to 1,469.4 (-31%), descent 2,338.5 to 1,547.8 (-34%), Vilverin entrance with authored collision 2,533.9 to 1,448.1 (-43%). Height against the original's samples on the Vilverin stairs (mean, median, RMS): +6.58, +10.0, 8.44 with the box; -0.30, +0.72, 5.23 with the hull. The low-ceiling stair passes (distance ratio 0.97; the box was blocked at 0.24). The ramp rose from 82.6 to 91.1, the wall blocks as designed, and the closed gate stops the body 7.64 units earlier, the radius difference. Peak speeds stay in 163 to 177 for both bodies. Phone acceptance was pending when recorded.",
+"Why": "Inferred. It matches the measured support-under-apex contact in the original, and the cone resting on tread edges is what plausibly makes the original's stairs a ramp rather than discrete steps. The rule is a port choice, not Havok's algorithm.",
+"Next": "Phone acceptance of the hull build for stairs, gate, corridors, low ceilings, jumping and sneaking. Measure the original's stepping (maximum step height, slope limit), gait and jump so the 34/62 constants can be replaced by recovered values.",
+"Unverified": "The original controller's stepping, slope limit, race scaling and acceleration; box-body variation differs between repeated runs (2,379 versus 2,128 on ascent), so only row comparisons are meaningful; the original's stair walk moved at 82 units/s while the probe moves at 150, so the height comparison is approximate."
+}
+},
+{
+"id": "EXP-OO-007",
+"title": "Obtain Oblivion's run and sneak speeds by changing key bindings on the donor engine",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "verified",
+"scope": "project",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:player-controller",
+"engine:openmw",
+"problem:tes4-movement-parity",
+"subsystem:input-ui"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"gait",
+"run",
+"sneak",
+"speed",
+"key-bindings",
+"animation-state"
+],
+"related": [
+"EXP-OO-008"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-007-key-bindings-for-run-and-sneak.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-007-key-bindings-for-run-and-sneak.md",
+"sections": {
+"Symptom": "Owner report: sneak did nothing and run felt the same as walk. Oblivion's normal travel mode is run.",
+"Hypothesis": "The gait is a control-binding problem on the borrowed engine: a run toggle, a Caps Lock pulse, or a held Shift with always-run pinned off would switch gait.",
+"Environment": "OpenOblivion phone previews 0.6-run-toggle, 0.7-controls and 0.8-run (a settings pin plus the touch overlay), with phone QA logs; a desktop probe on the same engine. Metric: horizontal speed over grounded moving samples.",
+"Change": "Three successive binding schemes: a run toggle, a Caps Lock pulse, and hold-Shift-for-run with always-run pinned off. Physics, gravity and collision unchanged.",
+"Oracle": "Grounded moving-sample speed from phone logs, and the probe's `current_speed` for requested walk, run and sneak. A working gait shows a second speed band.",
+"Result": "Failed on every build. Build 0.7 stayed at a median of about 151 units/s. Build 0.8 over 357 grounded moving samples across 25.7 simulation seconds had median 149.9, maximum 165.1, nothing above 200. The desktop probe measured walk, run and sneak all at 150 while the engine reported a run speed of 337.5. Builds 0.6 and 0.7 were withdrawn.",
+"Why": "The borrowed engine selects run or sneak speed only while the character animation state machine is in a run or sneak state. The preview player had no TES4 locomotion animations (its template body failed to load), so the state never changed and the player always moved at the Morrowind walk speed. Observed directly by the probe, so the mechanism is verified for this setup.",
+"Next": "Stop experimenting with bindings. Compute ground speed from the original's settings-based formula and override the engine's maximum-speed function directly (EXP-OO-008).",
+"Unverified": "Behaviour once TES4 locomotion animations exist; whether a binding change would work on an actor that does have run and sneak animations."
+}
+},
+{
+"id": "EXP-OO-008",
+"title": "Port the original's settings-based ground-speed formula into the donor's maximum-speed function",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "inferred",
+"scope": "build",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:player-controller",
+"game:oblivion",
+"engine:openmw",
+"problem:tes4-movement-parity"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"gait",
+"speed",
+"formula",
+"settings",
+"static-analysis"
+],
+"related": [
+"EXP-OO-007"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-008-ground-speed-formula-from-exe.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-008-ground-speed-formula-from-exe.md",
+"sections": {
+"Symptom": "No second gait after three binding experiments (EXP-OO-007).",
+"Hypothesis": "The original computes ground speed from game settings and the player's Speed and Athletics, not from animation state. Reproducing that formula in the donor's maximum-speed function gives the original's speeds regardless of animation.",
+"Environment": "The executable's character speed routine and the settings it registers at start-up, read statically from the Steam build; the owner's master supplies the overriding values (walk 90 to 130, run multiplier 3, no-weapon 1.1, sneak 0.6) and the Player record (Speed 40, Athletics 5); desktop probe with the same binary. One setting (the run athletics multiplier) is absent from the master and takes the executable's own default.",
+"Change": "A hash-locked receipt patches the donor's `Npc::getMaxSpeed` (enabled by `OPENOBLIVION_TES4_MOVEMENT=1`) so the player's ground speed uses the formula and the run and sneak stances directly. Swimming and levitation keep the existing paths.",
+"Oracle": "Probe speeds against the formula's predictions, and one earlier private sample of the original walking down the Vilverin stairs (peak 117.3 units/s).",
+"Result": "Worked for the modelled case. Desktop probe, same binary: walk 116.6, run 355.6, sneak 70.0 units/s with the weapon sheathed (with a weapon drawn: 106.0, 323.3, 63.6 walk, run, sneak). The original's walking peak of 117.3 is consistent with the sheathed walk. Not modelled: carried weight, changing attributes and skills, skill use, swim speed, jump height, sneak camera height. Other actors keep the borrowed speeds.",
+"Why": "Inferred from a static read of the routine plus one consistent walking sample; the formula's run branch was never sampled in the original.",
+"Next": "Sample the original's run and sneak speeds to confirm the run branch, then jump height and swimming. Publish the method and the rules, not settings tables.",
+"Unverified": "Original run speed, sneak speed and jump; encumbrance and skill progression; phone feel."
+}
+},
+{
+"id": "EXP-OO-009",
+"title": "Player cannot pass the open Vilverin gate: the failed player collision model, not the gate",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "verified",
+"scope": "project",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"problem:silent-asset-load-failure",
+"subsystem:collision",
+"engine:openmw",
+"subsystem:player-controller"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"doorway",
+"error-marker",
+"osgt",
+"asset-load",
+"diagnosis",
+"gate"
+],
+"related": [
+"EXP-OO-003"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-009-gate-blocked-by-failed-player-model.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-009-gate-blocked-by-failed-player-model.md",
+"sections": {
+"Symptom": "Owner report on build 0.18-audio: both hall-gate leaves visibly open, but movement attempts after Open stop at the doorway. The log shows successful Open/Close/Open playback and then `Unmatched property only., expecting UniqueID`, `Unsupported wrapper class Collision` and `Failed to load 'meshes/basicplayer.osgt'`.",
+"Hypothesis": "The symptom pointed at the door (leaves open, body stops at the doorway), so the animated leaf boxes or the frame were suspected. The diagnosis that held: the player collision model failed to load, the engine substituted its embedded error-marker body, and that body is wider than the opening.",
+"Environment": "OpenOblivion 0.18 on the OpenMW pins; OSG 3.6.5 ASCII reader; desktop probes with double-precision Bullet and one async physics worker; an independently written private JNI harness linking the unchanged ARM64 OSG static libraries on an isolated Android 14 emulator (model decoding only, no GL scene). Marker width about 123.2 units, frame opening about 111 units at mid height and 126.75 at the floor, the intended template body 26.6 units wide.",
+"Change": "Two defects removed from the OSGT file: it had one Generator value where OSG's ASCII stream reads two, and extra `#` prose lines after the header that OSG does not skip. Geometry, collision node name, settings rewrite and body dimensions unchanged.",
+"Oracle": "The preserved old file reproduces the exact parser errors with OSG 3.6.5. A new CTest fixture uses the real OSG reader and checks the hierarchy, eight vertices, twelve triangles and all six bounds. Native Vilverin before/after probes with the same gate and frame: old file, the player stays at local Y -13.6 after Open; corrected file, blocked at Y -18.28 while closed and crossing to Y +373.57 after Open. The ARM64 harness reports old file rejected and fixed file passing.",
+"Result": "Worked on desktop and in the emulator harness; the physical phone passage retest was pending. A model that fails to load now fails the probe independently of visual gate success.",
+"Why": "The engine silently substitutes an embedded error marker for a model that fails to load; the 123-unit marker cannot pass a 111-unit opening, which looks exactly like a collision defect. The earlier desktop gate probes used a healthy DAE model, so nothing had exercised the Android OSGT load path.",
+"Next": "When movement is blocked, read the log for model or asset load errors before debugging collision geometry, and measure the body that is actually in use. Make a failing supplied asset fail the test run, not just log.",
+"Unverified": "Physical-phone passage; whether other silent substitutions exist for other asset kinds."
+}
+},
+{
+"id": "EXP-OO-010",
+"title": "Run the arm64-only build on the stock x86_64 Android emulator and work around the GLES crash",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "inferred",
+"scope": "build",
+"status": "final",
+"date": "2026-10-06",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"about": [
+"problem:android-emulator-gles-crash",
+"platform:android-x86_64-emulator",
+"platform:android-arm64",
+"tech:opengl-es",
+"tech:gl4es",
+"subsystem:rendering-gl",
+"subsystem:android-port"
+],
+"games": [],
+"tags": [
+"android",
+"emulator",
+"arm64",
+"gles",
+"translation",
+"sigsegv"
+],
+"related": [
+"EXP-OO-011"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-010-arm64-build-on-x86-64-emulator-gles-crash.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-010-arm64-build-on-x86-64-emulator-gles-crash.md",
+"sections": {
+"Symptom": "The phone build installs and starts on an Android x86_64 emulator image (which lists arm64 in its ABI list through a translation layer) but crashes at scene start with SIGSEGV, fault address 0, in `libndk_translation_proxy_libGLESv2.so` on Android 14 or in a `berberis` trampoline on Android 16.",
+"Hypothesis": "A fixable emulator configuration: the host GPU path, software rendering, or a newer system image would avoid the crash.",
+"Environment": "Android 14 and Android 16 (API 36) google_apis x86_64 images, KVM, 4 GB RAM AVD, host GPU and software (`swiftshader_indirect`) rendering; OpenOblivion arm64-only APK rendering through GL4ES to GLES.",
+"Change": "Varied the GPU mode (host, software) and the image version (14, 16) with the same APK.",
+"Oracle": "Whether the app reaches a drawn frame; crash backtrace and fault address.",
+"Result": "Failed in every combination: the crash persists at scene start.",
+"Why": "Inferred. The translation layer's GLES proxy exposes entry points that the emulator's GPU library does not implement, leaving a null call target that GL4ES reaches during initialisation. The GPU mode and image version made no difference, which is consistent with a layer problem and not with a configuration problem.",
+"Next": "Do not chase the function. Build the same engine source natively for x86_64, add `lib/x86_64` to a copy of the APK, and test with the scripted gate (EXP-OO-011).",
+"Unverified": "Other emulator images, ARM-native hosts and real phones (which do not use this layer)."
+}
+},
+{
+"id": "EXP-OO-011",
+"title": "Native x86_64 build for the emulator gate, and the GL4ES/EGL start-up deadlock it exposed",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "verified",
+"scope": "build",
+"status": "final",
+"date": "2026-10-06",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"about": [
+"problem:android-startup-deadlock",
+"platform:android-x86_64-emulator",
+"tech:gl4es",
+"subsystem:android-port",
+"technique:android-emulator-gate"
+],
+"games": [],
+"tags": [
+"android",
+"emulator",
+"x86_64",
+"deadlock",
+"egl",
+"dlopen",
+"device-gate"
+],
+"related": [
+"EXP-OO-010"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-011-native-x86-64-build-and-startup-deadlock.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-011-native-x86-64-build-and-startup-deadlock.md",
+"sections": {
+"Symptom": "After rebuilding for x86_64 (EXP-OO-010), launches intermittently never started: the process stayed alive at 0% CPU, the window list showed only the system \"Splash Screen\", the log stopped right after the activity's `onCreate`, and the activity manager reported \"Launch timeout has expired\". Three of four launches hung.",
+"Hypothesis": "A lock-order deadlock: the main thread is inside `dlopen` of the GL4ES library (holding the linker lock) whose constructor calls `eglGetDisplay`, which waits for libEGL's driver-init mutex; the UI RenderThread holds that mutex while loading the driver and needs the linker lock.",
+"Environment": "Android 16 x86_64 emulator with a userdebug image (`adb root` available), OpenOblivion rebuilt for x86_64 and overlaid into a copy of the phone APK, scripted gate with an explicit emulator serial.",
+"Change": "Call `EGL14.eglGetDisplay(EGL_DEFAULT_DISPLAY)` on the main thread before the first `System.loadLibrary`, so the driver is initialised before GL4ES's constructor runs.",
+"Oracle": "`debuggerd -b <pid>` printing every thread's native backtrace to show the lock cycle; launch outcomes before and after; a six-check gate (launcher ready, engine thread started, 20 s stable, drawn frame, menu opens, system BACK closes it).",
+"Result": "Worked: three of four launches hung before the change and five of five started after it (small samples); the gate passes six of six on the Android 16 emulator. It checks Java, UI, input, Lua and engine logic, not arm64 code or phone speed.",
+"Why": "Backtraces showed the cycle, and a slow emulator EGL start-up makes the race likely. Mechanism verified; real-phone prevalence unknown.",
+"Next": "Package the next phone build with both Java fixes (this one and the Android back-key handling), extend the gate (other menus, a walk, a door, a conversation, frame timing), and confirm on a phone when phone testing resumes.",
+"Unverified": "That phones hit this race (EGL starts faster there); sample sizes of 4 and 5 launches; any arm64-specific behaviour or performance."
+}
+},
+{
+"id": "EXP-OO-012",
+"title": "Animate TES4 NPCs: KF transform decoding, then a T-pose caused by parts binding to a private skeleton copy",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "inferred",
+"scope": "build",
+"status": "final",
+"date": "2026-10-03",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"subsystem:animation",
+"problem:skeleton-bone-name-mismatch",
+"fmt:nif",
+"engine:openmw",
+"game:oblivion"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"animation",
+"kf",
+"skeleton",
+"t-pose",
+"skinning",
+"attachment",
+"bone-names"
+],
+"related": [],
+"supersedes": "",
+"path": "experiments/exp-oo-012-kf-decode-and-tpose-attachment-skeleton.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-012-kf-decode-and-tpose-attachment-skeleton.md",
+"sections": {
+"Symptom": "Two stages. First, the unchanged native renderer loaded zero tracks from the owner's third-person idle and forward-walk KF roots (NIF 20.0.0.4). Second, after decoding worked and the animation clock ran, the first live probe still showed a T-pose. Earlier, the donor's part attachment had also failed on a missing Groin node because Oblivion's skeleton uses other bone names.",
+"Hypothesis": "Stage one: the renderer's KF loader does not understand the 20.0.0.4 `NiControllerSequence` layout (string-palette bone names, compressed cubic-spline channels, WXYZ rotation). Stage two: skinned parts resolve a different skeleton instance than the one being animated.",
+"Environment": "Native Linux and Android ARM64 builds of the OpenMW pins with the animation receipt; Vilverin probes with five NPCs; independent PyFFI parsing and a separately written float64 de Boor evaluator as cross-check; the owner's idle and walk clips.",
+"Change": "A KF adapter decoding transform tracks with bounded evaluators; then an original TES4 attachment selector that copies the renderable's local subtree, replacing an empty filter that copied each part's private skeleton so skinned parts resolve the actor's animated bones. Skeleton targets missing from the human skeleton (nine tail targets) are reported and skipped, not mapped to invented bones.",
+"Oracle": "Decoder: 73 transform tracks loaded from each clip (idle: 23 compressed spline, 50 ordinary, two float tracks outside the adapter); 1,525 compressed channel samples cross-checked with maximum component error 7.3e-7 against a tolerance of 2e-5; 8,906 finite sampled poses. Live: five NPCs with at least 13 clock samples per actor and two natural loop wraps, plus inspected private captures showing lowered arms and the original idle pose.",
+"Result": "Worked on desktop probes (decoder and live idle). Phone rendering of idle was pending. Locomotion and attack selection, first-person hands, facial and morph tracks, equipment masking and special idles remain open.",
+"Why": "Inferred for stage two (the private-skeleton copy was found by inspection and fixed by the subtree copy; the capture changed accordingly). Stage one is verified by the cross-check. The skeleton has no Groin, Chest, Neck, Head or Right Hand nodes, so any code that looks bones up by another game's names fails: bone naming is a data fact of each game's skeleton, not an engine constant.",
+"Next": "Locomotion selection from movement state, first-person hands, facial tracks, equipment masking, then phone acceptance of idle. When a skeleton \"loads\" but animation or attachments are wrong, list the skeleton's node names and compare them with what the donor looks up, then check which skeleton instance each skinned part binds to.",
+"Unverified": "Original-executable playback; any locomotion comparison; the two float tracks; phone rendering."
+}
+},
+{
+"id": "EXP-OO-013",
+"title": "USE does nothing at the Vilverin hall gate: touch overlay layout and the same-cell door handler",
+"project": "openoblivion",
+"result": "partial",
+"level": "inferred",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-01",
+"agents": [
+"Claude Code (Sonnet 5.5), recorded from project docs"
+],
+"about": [
+"problem:touch-overlay-blocks-actions",
+"subsystem:input-ui",
+"engine:openmw"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"touch",
+"overlay",
+"use",
+"activation",
+"door",
+"hit-testing"
+],
+"related": [
+"EXP-OO-009"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-013-use-button-at-vilverin-gate.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-013-use-button-at-vilverin-gate.md",
+"sections": {
+"Symptom": "Phone report on build 0.10-touch-name: the player came down the Vilverin hall stairs and stopped at the gate while the centre ray read `Gate` (a DOOR record); the log has no activation line. The thirteen-button touch overlay covered the right half of the screen, including USE.",
+"Hypothesis": "Two causes. The USE button was covered or hard to reach, so the activation never arrived. Separately, the engine's activation handler for a same-cell door has no animation: it hides the object for five seconds and shows it again, so even a delivered activation does not look like opening.",
+"Environment": "OpenOblivion phone build 0.10, owner's phone report with log; the 0.51 activation handler; the touch layout test on four screen sizes.",
+"Change": "The closed overlay was reduced to a move stick plus USE, JUMP, ATK and MORE (the rest on a tray), and the packer rewrites the same-cell door handler into a toggle (first USE hides the closed mesh until the next USE). A successful USE logs `OPENOBLIVION_DOOR`. Playing the original Open and Close sequences came later as separate work.",
+"Oracle": "The presence of an `OPENOBLIVION_DOOR` line in the phone log after USE, and a layout test that checks the button cluster on four resolutions. Tap logging (`OPENOBLIVION_UI tap`) separates a tap that never arrived from a tap that did nothing.",
+"Result": "Partial. The layout change and the toggle are in and tested at the layout level. No phone retest was recorded when this was written, so it is not established that the covered button was the blocker.",
+"Why": "Inferred from the missing log line and the layout. The door handler's behaviour was read from the engine's own handler. Neither cause was reproduced independently.",
+"Next": "When a touch action does nothing, check in this order: is there an action log line at all (event never arrived versus handler did nothing), do overlay hit areas cover or swallow the control, and what does the engine's default handler for that object type do. Retest on the phone with the reduced overlay.",
+"Unverified": "Whether the overlay was the blocker; whether USE reaches the handler on the phone; other door types."
+}
+},
+{
+"id": "EXP-OO-014",
+"title": "Recover game-setting defaults from an executable with no symbols by scanning static-initializer patterns",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "verified",
+"scope": "build",
+"status": "final",
+"date": "2026-10-06",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"about": [
+"technique:static-initializer-scan",
+"subsystem:binary-recon",
+"game:oblivion",
+"technique:string-xref-pivot"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"gmst",
+"static-initializer",
+"x86",
+"settings",
+"pattern-scan",
+"no-symbols"
+],
+"related": [],
+"supersedes": "",
+"path": "experiments/exp-oo-014-gmst-defaults-from-static-initializers.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-014-gmst-defaults-from-static-initializers.md",
+"sections": {
+"Symptom": "About 2,050 game settings exist, but the master overrides only 382; the others (jump, swim, fall, encumbrance, persuasion, barter, disposition) had no known values. The executable has RTTI for classes but no function names, and a string search for a setting name finds the name but no code references.",
+"Hypothesis": "Each setting is created by a static initializer that pushes the name string and loads its default through a recognisable instruction pattern, so a pattern scan anchored on the name push can recover (name, default) without a disassembler.",
+"Environment": "Steam retail Oblivion.exe (x86 PE32), PE timestamp 0x462392c7, read-only; pure Python scanner; `Oblivion.esm` from the same install for name coverage.",
+"Change": "Iterated four times. The first anchored on the name push but its float form had an offset arithmetic bug, so it found only strings. Second, the float form (default loaded just before the pushes) lifted coverage to 285 of 382. Third, `fldz` and `fld1` (0.0 and 1.0), where the object load comes before the name push, gave 306. Fourth, small integers pushed as imm8 and both instruction orders gave 378 of 382.",
+"Oracle": "Name coverage against the master's GMST records (the equality of values is not an oracle, because the master deliberately overrides placeholder defaults); an independent disassembly-text extractor (floats only) that agreed on all 711 float defaults it produced; non-trivial equal values where the master does not override; placeholder strings decoded plainly.",
+"Result": "Worked: 378 of 382 master GMST names covered after four iterations, with the independent cross-check agreeing on every float. The four remaining names (region texture-generation settings) use another initializer form. The exe was never run, so these are static defaults.",
+"Why": "Each setting registers through one of two instruction orders with several push forms; each of the first three iterations missed a form that the compiler uses for a subset of values. Coverage plus an independent extractor, not equality with the master, is what exposed the gaps.",
+"Next": "Effective value is the master's record if present, else the executable default. Keep the output private (an executable-derived table); share the method and counts. Apply the same anchor-and-look-back approach to the command table and to quest or dialogue settings.",
+"Unverified": "Runtime values; that settings never change after initialization; the four ESM-only names; other builds of the executable."
+}
+}
+]
+}

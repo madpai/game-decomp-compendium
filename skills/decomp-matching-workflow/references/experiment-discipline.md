@@ -17,7 +17,7 @@ Distilled from BW1's AGENTS.md (the most explicit statement of method in the cor
 | Unknown offset/size/vtable slot | missing evidence | defer `layout:`/`vtable:` with what would settle it |
 | Target looks hand-written asm | out of scope | defer `asm:` immediately |
 
-Rules of thumb that cost others weeks:
+Rules of thumb that cost others weeks (the first is recorded as experiment `EXP-BW1-001`; `hub.py tried "compiler flag sweep"`):
 - *Prove that a knob moves the output before sweeping it.* A 5,000-build sweep over knobs that never touch the differing instructions finds nothing.
 - *Before trying another variant, name the assembly difference it is meant to explain.* If variants just shuffle registers or move the mismatch elsewhere, keep the clearest supported version and document the unresolved cause.
 - *Rank assumptions by evidence*: other-platform symbols and call sets across all units outrank guessed shapes of fabricated or hand-expanded functions. When a model cannot fit every caller, doubt the weakest-evidence caller before rewriting shared headers.

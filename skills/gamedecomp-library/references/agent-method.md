@@ -4,7 +4,7 @@ A compact method that combines the best practices seen in the corpus (Thief 3/BW
 
 ## 0. Before anything
 1. **State the goal in one sentence and pick the cheapest route that reaches it** (`decomp-matching-workflow` section 0, `game-hooking-patterns` route table, `engine-reimplementation` approach table).
-2. **Search prior art**: `python3 scripts/hub.py prior-art "<game or engine>"`. Read the top hit of each group. Then check the web for anything newer than the snapshot (dates are in `data/sources.json`).
+2. **Search prior art**: `python3 scripts/hub.py prior-art "<game or engine>"` (symptom first: `hub.py diagnose "<symptom>"`; before an approach: `hub.py tried "<idea>"`). Read the top hit of each group. Then check the web for anything newer than the snapshot (dates are in `data/sources.json`).
 3. **Check legality and policy**: owned copy only; offline/single-player only for runtime work; no anti-cheat/DRM bypass; project AI policies (`query.py --id X --full`).
 4. **Start a journal** (`MODLOG.md`/handoff doc): paths, ids, versions, formats, class names, what failed and why, next step. Anything not in the journal is lost at the next context compaction.
 
@@ -12,7 +12,7 @@ A compact method that combines the best practices seen in the corpus (Thief 3/BW
 `re-binary-recon` (pe_info -> rtti_scan -> string_xrefs -> aob_scan), `game-asset-formats` (identify), `bethesda-gamebryo-re`/`halo-engine-re` for family facts. Record build ids (PE timestamp, file hashes).
 
 ## 2. Source of truth
-Read real code/data, never guess. Measure data over the whole file. Mark each fact **static / verified / inferred / guessed**; upgrade only with an independent second source.
+Read real code/data, never guess. Measure data over the whole file. Mark each fact **static / verified / inferred / documented / guessed** (definitions in `references/research-graph.md`); upgrade only with an independent second source. Give a result and its explanation separate levels, and never turn one project's choice into an engine fact.
 
 ## 3. Vertical slice
 One thing end to end with placeholders; commit it; widen afterwards.
@@ -24,7 +24,7 @@ Round trip; trace replay; real-data assertions over all records; scripted scene 
 Parallel agents need: claim queue (`decomp-matching-workflow/scripts/claimq.py`), scratch-only workers, a gate that decides acceptance, one-line JSON reports, a lead who integrates and reviews (`references/agent-swarm-playbook.md`).
 
 ## 6. Record and share
-Update the project's docs with measured facts and the rule-status table. Write a **field note** (template below) for anything the next agent would lose an hour to, including dead ends. Share upstream (universal-modder PR, project docs) only with the user's approval, never with game files, decompiled dumps, secrets or exe-derived tables.
+Update the project's docs with measured facts and the rule-status table. Write an **experiment record** for every failed or partial attempt (`hub.py template experiment`), a **finding** for each reusable measured fact, and a **field note** (template below) for anything the next agent would lose an hour to. Workflow and checklist: `references/project-integration.md`. Share upstream (universal-modder PR, project docs) only with the user's approval, never with game files, decompiled dumps, secrets or exe-derived tables.
 
 ## Field-note template (compatible with universal-modder's `knowledge/TEMPLATE.md`)
 ```markdown

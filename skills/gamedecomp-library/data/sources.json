@@ -63,9 +63,31 @@
    "url": "https://github.com/madpai/game-decomp-compendium/tree/main/knowledge",
    "license": "MIT",
    "snapshot": "2026-10-06",
-   "records": 3,
-   "use": "Findings from our own work in universal-modder's note format (Oblivion exe recon, static recon technique, OpenOblivion lessons). Indexed into data/local-notes.json; add notes under knowledge/ and run scripts/refresh/index_local_notes.py.",
-   "refresh": "scripts/refresh/index_local_notes.py"
+   "records": 8,
+   "use": "Findings from our own work in universal-modder's note format (Oblivion exe recon, static recon technique, OpenOblivion lessons and the movement/collision case study, Android emulator testing). Indexed into data/local-notes.json together with each note's parsed gotchas (symptom, cause, fix); add notes under knowledge/ and run scripts/refresh/build_knowledge.py.",
+   "refresh": "scripts/refresh/build_knowledge.py"
+  },
+  {
+   "id": "research-graph",
+   "name": "Research graph, findings and experiments (this repository)",
+   "kind": "knowledge-graph",
+   "url": "https://github.com/madpai/game-decomp-compendium/tree/main/knowledge",
+   "license": "MIT",
+   "snapshot": "2026-10-06",
+   "records": 253,
+   "use": "Typed, evidence-tagged relationships (knowledge/graph/nodes|edges|findings.jsonl) and structured experiment / dead-end records (knowledge/experiments). Hand-written, validated, with every source pointer resolved; generated into data/graph.json and data/experiments.json. Powers hub.py graph, diagnose, tried and the entity cards of prior-art.",
+   "refresh": "scripts/refresh/build_knowledge.py"
+  },
+  {
+   "id": "modder-gotchas",
+   "name": "universal-modder gotcha extracts",
+   "kind": "field-notes",
+   "url": "https://github.com/rehan-remade/universal-modder",
+   "license": "MIT",
+   "snapshot": "2026-10-06",
+   "records": 684,
+   "use": "Short extracts (symptom headline up to 160 chars, cause up to 200 chars) of the numbered gotchas of the 59 upstream field notes, with note path and gotcha number, so `hub.py diagnose` can search symptoms. Full text stays upstream.",
+   "refresh": "scripts/refresh/harvest_gotchas.py (after sync_modder_kb.py --pull)"
   }
  ]
 }
