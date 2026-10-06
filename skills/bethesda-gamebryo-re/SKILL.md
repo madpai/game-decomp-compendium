@@ -11,6 +11,7 @@ Start every Bethesda task with `python3 ../gamedecomp-library/scripts/hub.py pri
 - `Oblivion.esm`: 390 QUST, 3,817 DIAL, 19,278 INFO, 2,393 SCPT; 48,531 INFO conditions, **all CTDA records are 24 bytes**; condition type byte low bits `0x1` OR, `0x2` run-on-target, `0x4` use-global; operator = `type >> 5` (0 `==`, 1 `!=`, 2 `>`, 3 `>=`, 4 `<`, 5 `<=`). Record and GRUP headers are 20 bytes (Fallout 3 and later: 24).
 - `Oblivion.exe` (Steam build, PE timestamp 0x462392c7, fixed base 0x400000, no relocations, MSVC with **full RTTI**): 1,715 vtables / 1,482 classes recoverable in 0.15 s with `re-binary-recon/scripts/rtti_scan.py`, including `TESForm` subclasses, the whole `Ni*` scene graph, Havok, and `SpeedTree*` shader classes. The exe is wrapped by a protection stub (high-entropy `.bind` section holding the entry point); the code/data sections are readable and are what static analysis uses.
 - **Voice files** are `sound/voice/oblivion.esm/<race>/<m|f>/<quest>_<topic>_<INFO id as 8 hex digits>_<response number>.mp3`. Confirmed three ways: archive contents (`Oblivion - Voices1/2.bsa`), the `bsa-rs` documentation example, and the executable's own format string `%s_%s_%08X_%u` next to `Data\Sound\Voice` and the type strings `mp3` (game), `wav` (source), `lip` (lip-sync). Lip files exist in the original; the OpenOblivion port does not use them yet.
+- **GMST defaults are compiled into the exe**: 2,053 settings (987 float, 227 int, 839 string) are registered by static initializers, and the plugin's GMST records override them (378 of the ESM's 382 GMST names are covered by the extraction, which is the oracle for the method; ~83% of overlapping values differ because the master overrides placeholders). Effective value = ESM record if present, else the exe default. This resolves "movement settings absent from the master" (e.g. several jump/swim/fly/encumbrance settings exist only as exe defaults). `scripts/gmst_defaults.py OBLIVION.EXE --esm Oblivion.esm` extracts them; keep the output private.
 - The script command table is a data table in the exe: 40-byte records (long name, short name, opcode, needs-reference flag, parameter list); 370 commands, opcodes 0x1000-0x1171; a condition's function number is opcode minus 0x1000. Pivot: string `GetStage` is referenced from data (the table), not code.
 
 ## Task map
@@ -22,6 +23,7 @@ Start every Bethesda task with `python3 ../gamedecomp-library/scripts/hub.py pri
 | What the OpenOblivion port decided, which rules are verified vs guesses | `references/openoblivion-findings.md` |
 | Tools and ecosystem (xEdit, CK, MO2, LOOT, extenders, Rust crates, OpenMW), licences | `references/tools-and-ecosystem.md` |
 | Trace a behaviour in the original exe | `re-binary-recon` (string -> function, RTTI anchors) |
+| Game settings (GMST) missing from the master: recover built-in defaults from the exe | `scripts/gmst_defaults.py` (see `references/engine-classes-and-exe.md`) |
 | Hook the running game (offline, single player) | `game-hooking-patterns` (OBSE/xNVSE/SKSE route) |
 
 ## Working method for engine-behaviour questions
@@ -32,4 +34,4 @@ Start every Bethesda task with `python3 ../gamedecomp-library/scripts/hub.py pri
 5. Record unknowns as guesses in the code and the docs (a table with Status per rule), not as facts.
 
 ## Guardrails
-Own copy of the game only; never commit game data or tables extracted from the exe (the command table and any exe-derived dump stay private); `esplugin` and `libloadorder` are GPL-3.0 (do not paste their code into non-GPL projects); do not touch DRM or anti-tamper; single-player/offline only for runtime work.
+Own copy of the game only; never commit game data or bulk tables extracted from the exe (the command table, RTTI dump and GMST defaults stay private; the scripts that produce them are fine to share); `esplugin` and `libloadorder` are GPL-3.0 (do not paste their code into non-GPL projects); do not touch DRM or anti-tamper; single-player/offline only for runtime work.
