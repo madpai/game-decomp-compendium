@@ -89,6 +89,29 @@
 "source": "local"
 },
 {
+"path": "techniques/adb-over-tailscale-from-a-build-host.md",
+"kind": "technique",
+"title": "Driving an Android phone with adb from a remote build host over Tailscale (Termux self-pair, adb tcpip)",
+"game": "",
+"games_also": [],
+"game_version": "",
+"platform": null,
+"engine": null,
+"route": null,
+"tools": [],
+"anti_cheat": "",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/adb-over-tailscale-from-a-build-host.md",
+"summary": "No USB cable and no shared Wi-Fi needed: pair the phone with itself in Termux, switch its adbd to TCP 5555, and `adb connect` to the phone's Tailscale address from the build host. Measured on a Galaxy S24+ (Android 16): 23 ms round trip on a direct tailnet path, about 6 MB/s for a 292 MB `adb install`.",
+"gotchas": 6,
+"source": "local"
+},
+{
 "path": "techniques/android-emulator-testing-of-arm64-native-ports.md",
 "kind": "technique",
 "title": "Testing arm64-only Android native ports on an x86_64 emulator: GLES translation crash, native x86_64 rebuild, GL4ES/EGL start-up deadlock",
@@ -109,6 +132,29 @@
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/android-emulator-testing-of-arm64-native-ports.md",
 "summary": "If an Android port ships only arm64 libraries and renders through GL4ES/GLES, the stock x86_64 emulator crashes in Google's ARM translation layer. Build the same source for x86_64, add `lib/x86_64` to a copy of the APK, and drive it with a scripted adb gate. Doing this also exposed a real start-up deadlock between GL4ES's load-time `eglGetDisplay` and the UI RenderThread.",
 "gotchas": 9,
+"source": "local"
+},
+{
+"path": "techniques/reviewing-an-inflight-game-port.md",
+"kind": "technique",
+"title": "Reviewing an in-flight game port: what to measure first (feedback loop, engine split, subsystem ceiling, UI as data, documentation drift)",
+"game": "",
+"games_also": [],
+"game_version": "",
+"platform": null,
+"engine": null,
+"route": null,
+"tools": [],
+"anti_cheat": "",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/reviewing-an-inflight-game-port.md",
+"summary": "A week-old, fast-moving port (OpenMW-based reimplementation of a 2006 RPG for Android) had good evidence discipline and still stalled on five structural problems. Each had a cheap measurement that turned an opinion into a number. Use the list on any port or decomp that has outgrown its first plan.",
+"gotchas": 5,
 "source": "local"
 },
 {
