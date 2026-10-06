@@ -1,0 +1,59 @@
+{
+"meta": {
+"source": "https://github.com/rehan-remade/universal-modder",
+"license": "MIT",
+"revision": "76b9c7e77ead5fd2d5f1b7613c6a7ed591b01c70 2026-10-06"
+},
+"skills": [
+{
+"name": "asset-pipeline",
+"description": "Turn generated or hand-made art into exactly what a game engine loads. Covers sprite cutout, trim and nearest-neighbour fitting to frame sizes, pixelation to a palette, sprite sheets and strips, player/team-colour masks, seamless textures, and rendering a 3D model into sprite frames from the game's own camera (isometric/RTS 8 or 16 headings, side view, top-down) with Blender. Use after generating ",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/asset-pipeline/SKILL.md"
+},
+{
+"name": "fal-assets",
+"description": "Generate game assets with fal (fal.ai) through the fal MCP server, the `um fal` CLI (REST) or `fal api`. Covers sprites and icons with transparent backgrounds, consistent variants and animation frames, pixel art, seamless textures, PBR material maps, image-to-3D models, remeshing, auto-rigging, sound effects, music, voice lines, and trailer or cutscene video. Use whenever a mod needs new art, audi",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/fal-assets/SKILL.md"
+},
+{
+"name": "game-automation",
+"description": "Launch, see and drive a real game so an agent can test its own mods. Covers launching via Steam or the exe, windowed mode at a fixed size, screenshots of the game window (GPU-safe capture), clicking and typing into menus, holding keys, relative mouse, crash-reporter cleanup, killing by PID, reading logs, scripted test scenes, and an in-game JSON bridge that lets an agent observe and act. Windows-f",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/game-automation/SKILL.md"
+},
+{
+"name": "game-recon",
+"description": "Figure out how a specific installed game can be modded, before writing any mod code. Covers where it's installed, the engine and version, managed vs native code, anti-cheat, loaders already present, save and config folders, and the community's modding route. Use when the user asks \"can I mod <game>?\", \"what engine is <game>\", \"how do people mod <game>\", or at the start of any modding task. Produce",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/game-recon/SKILL.md"
+},
+{
+"name": "mashup-mods",
+"description": "Build cross-game mashups and total conversions, the \"Minecraft inside Elden Ring\" or \"skateboarding in MW2\" kind. Covers passthrough mods (two games running at once and exchanging state, rendering and collision), porting one game's content or mechanics into another, embedding a decompiled game as a library, and clean reimplementations that read the user's own game files. Use when the user wants to",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mashup-mods/SKILL.md"
+},
+{
+"name": "mod-any-game",
+"description": "Mod a PC game the user owns, taking an idea to working in the real game and recorded. It covers new items, weapons, enemies, bosses, units, civilizations, mechanics, art, sound, VR and cross-game mashups. Use when the user wants to mod, extend, hack on, reverse engineer or mash up a game (\"add a nuke to Terraria\", \"make a new civ for Age of Empires\", \"put Minecraft inside X\", \"can I mod this game?",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/SKILL.md"
+},
+{
+"name": "publish-mod",
+"description": "Package and release a finished game mod. Covers the pre-release lint (no game files, decompiled code or leaked keys), README and install steps, credits and AI disclosure, versioning, where to upload (Nexus Mods, Steam Workshop, Thunderstore, mod.io, GitHub releases), and the post with a video. Use when the user wants to ship, share, upload, release or post a mod.",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/publish-mod/SKILL.md"
+},
+{
+"name": "reverse-engineering",
+"description": "Read how a game actually works so a mod can hook it. Decompile .NET/Mono (ILSpy), IL2CPP (Cpp2IL, Il2CppDumper), Java (Vineflower) and native code (Ghidra, IDA, via MCP servers); dump data and asset formats; reverse-engineer a binary file format and prove it with a round trip; read live memory (Cheat Engine, Frida, x64dbg); find render passes (RenderDoc). Use when a mod needs game internals, e.g. ",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/reverse-engineering/SKILL.md"
+},
+{
+"name": "share-field-notes",
+"description": "Search and contribute to the shared AI-modding knowledge base, where field notes record how specific games were modded, decompiled or reverse-engineered (exact versions, route, engine facts, verification, gotchas). Use before starting work on a game (\"has anyone modded X?\"), when stuck on an engine quirk, and at the end of any modding or reverse-engineering session to write up what was learned and",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/share-field-notes/SKILL.md"
+},
+{
+"name": "showcase-video",
+"description": "Record and cut a short showcase video of a game mod, or a compilation of clips, ready to post on X/YouTube. Records the game window with only the game's own audio, picks moments from contact sheets, and edits with one-line animated titles, creator credits, transitions, music, watermark and fade-out via an EDL JSON. Use when the user wants a demo video, trailer, clip or montage of a mod, or wants t",
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/showcase-video/SKILL.md"
+}
+]
+}

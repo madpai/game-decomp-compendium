@@ -1,0 +1,190 @@
+{
+"meta": {
+"source": "https://github.com/rehan-remade/universal-modder",
+"license": "MIT",
+"revision": "76b9c7e77ead5fd2d5f1b7613c6a7ed591b01c70 2026-10-06"
+},
+"playbooks": [
+{
+"id": "bethesda",
+"title": "Bethesda: Creation Engine / Gamebryo (Skyrim, Fallout 3/NV/4/76, Oblivion, Starfield)",
+"identify": "`Data/*.esm` plus `*.bsa`/`*.ba2` archives next to `SkyrimSE.exe` / `Fallout4.exe` /",
+"headings": [
+"Use a mod manager for isolation",
+"Routes",
+"Agent workflow tips",
+"Pitfalls"
+],
+"bytes": 2915,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/bethesda.md",
+"path": "skills/mod-any-game/references/engines/bethesda.md"
+},
+{
+"id": "big-frameworks",
+"title": "Big games with community frameworks",
+"identify": "",
+"headings": [
+"Capcom RE Engine (Resident Evil 2/3/4/7/8, Monster Hunter Rise/Wilds, Devil May Cry 5, Street Fighter 6, Dragon's Dogma 2)",
+"FromSoftware (Elden Ring, Dark Souls, Sekiro, Armored Core 6, Nightreign)",
+"Rockstar RAGE (GTA V Legacy/Enhanced, RDR2)",
+"CD Projekt REDengine",
+"Larian (Baldur's Gate 3)",
+"Paradox, Total War, XCOM and the rest",
+"Frostbite (Battlefield, Mass Effect Andromeda, Dragon Age, FIFA)"
+],
+"bytes": 4475,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/big-frameworks.md",
+"path": "skills/mod-any-game/references/engines/big-frameworks.md"
+},
+{
+"id": "dotnet-xna",
+"title": ".NET games: XNA / FNA / MonoGame and friends",
+"identify": "The exe is a managed assembly (`um scan` shows `.NET`). Look for `FNA.dll`,",
+"headings": [
+"Known loaders (use them)",
+"Terraria → tModLoader",
+"Stardew Valley → SMAPI",
+"Celeste → Everest",
+"Others",
+"Read the game",
+"Assets",
+"Pitfalls"
+],
+"bytes": 3278,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/dotnet-xna.md",
+"path": "skills/mod-any-game/references/engines/dotnet-xna.md"
+},
+{
+"id": "genie-aoe2",
+"title": "Genie engine: Age of Empires II DE (and AoE1 DE)",
+"identify": "`AoE2DE_s.exe` and `resources/_common/dat/empires2_x2_p1.dat`.",
+"headings": [
+"Mod kinds (local mod = folder in `mods/local/<Mod>/` mirroring `resources/`)",
+"Facts to know"
+],
+"bytes": 3259,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/genie-aoe2.md",
+"path": "skills/mod-any-game/references/engines/genie-aoe2.md"
+},
+{
+"id": "godot",
+"title": "Godot (3.x / 4.x)",
+"identify": "There is a `.pck` next to the exe (magic `GDPC`), or the pck is appended to the exe itself.",
+"headings": [
+"Read the game",
+"Routes",
+"Content",
+"Pitfalls"
+],
+"bytes": 2301,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/godot.md",
+"path": "skills/mod-any-game/references/engines/godot.md"
+},
+{
+"id": "minecraft",
+"title": "Minecraft",
+"identify": "",
+"headings": [
+"Java Edition: code mods with Fabric (or NeoForge)",
+"Bedrock Edition: add-ons",
+"Pitfalls"
+],
+"bytes": 4682,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/minecraft.md",
+"path": "skills/mod-any-game/references/engines/minecraft.md"
+},
+{
+"id": "misc-engines",
+"title": "Other engines, quick routes",
+"identify": "",
+"headings": [
+"GameMaker (`data.win`, `game.unx`)",
+"RPG Maker",
+"Ren'Py (`renpy/`, `game/*.rpa`)",
+"Paradox (Clausewitz/Jomini: EU4, CK3, HOI4, Stellaris, Victoria 3)",
+"id Tech / Doom family",
+"HTML5 / Electron / NW.js games",
+"LÖVE (Lua)",
+"Java games (non-Minecraft)",
+"Defold, Cocos2d-x, Haxe/OpenFL"
+],
+"bytes": 3533,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/misc-engines.md",
+"path": "skills/mod-any-game/references/engines/misc-engines.md"
+},
+{
+"id": "native",
+"title": "Native engines without a mod loader (C/C++, custom engines)",
+"identify": "",
+"headings": [
+"1. Get code into the process",
+"2. Find what to hook",
+"3. Hook",
+"4. Draw and interact",
+"5. Reimplementation instead of patching (for total control)",
+"Pitfalls"
+],
+"bytes": 3903,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/native.md",
+"path": "skills/mod-any-game/references/engines/native.md"
+},
+{
+"id": "retro-decomp",
+"title": "Retro and console games: decomps, recomps, emulators",
+"identify": "",
+"headings": [
+"Is there already a decompilation or port?",
+"Static recompilation (no source, still native)",
+"Starting a decompilation with agents",
+"Emulator-based mods (no source needed)",
+"Pitfalls"
+],
+"bytes": 3406,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/retro-decomp.md",
+"path": "skills/mod-any-game/references/engines/retro-decomp.md"
+},
+{
+"id": "source",
+"title": "Source (1) and Source 2",
+"identify": "`<mod>/gameinfo.txt`, `*_dir.vpk`, and `bin/engine.dll`.",
+"headings": [
+"Source 1 (Half-Life 2, Portal 2, TF2, L4D2, Garry's Mod, CS:S...)",
+"Source 2 (CS2, Dota 2, Half-Life: Alyx, Deadlock)",
+"Rules"
+],
+"bytes": 2123,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/source.md",
+"path": "skills/mod-any-game/references/engines/source.md"
+},
+{
+"id": "unity",
+"title": "Unity",
+"identify": "`UnityPlayer.dll` and a `<Game>_Data/` folder.",
+"headings": [
+"Route 1: an existing community loader (check first)",
+"Route 2: BepInEx (or MelonLoader) + Harmony",
+"Read the game",
+"Content and assets",
+"Pitfalls"
+],
+"bytes": 4489,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/unity.md",
+"path": "skills/mod-any-game/references/engines/unity.md"
+},
+{
+"id": "unreal",
+"title": "Unreal Engine (4 / 5)",
+"identify": "`<Project>/Binaries/Win64/<Project>-Win64-Shipping.exe` and `<Project>/Content/Paks/*.pak`.",
+"headings": [
+"Route 1: UE4SS (scripting and hooks, no engine recompile)",
+"Route 2: pak mods (asset and blueprint replacement)",
+"Route 3: VR / camera / engine tweaks",
+"Read the game",
+"Pitfalls"
+],
+"bytes": 3342,
+"url": "https://github.com/rehan-remade/universal-modder/blob/main/skills/mod-any-game/references/engines/unreal.md",
+"path": "skills/mod-any-game/references/engines/unreal.md"
+}
+]
+}

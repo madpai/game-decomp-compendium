@@ -1,0 +1,983 @@
+{
+ "2tie--mh1j": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "README forbids AI-produced code AND indexing/modification of the repo by agents. Do not ingest or contribute.",
+  "use": [
+   "gamedecomp-library"
+  ]
+ },
+ "alexbatalov--fallout1-ce": {
+  "depth": "readme",
+  "note": "Playable reimplementation of Fallout 1 with bug fixes and QoL; drop-in replacement executable using the user's data files, SDL2 portability.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "alexbatalov--fallout2-ce": {
+  "depth": "readme",
+  "note": "Same approach for Fallout 2.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "almamu--crashbandicootxs-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "GBA decomp with an explicit \"AI-assisted decompilation\" section: nothing trusted on the AI's say-so; every function verified.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "ashfordfamily--recvx-decomp": {
+  "ai": "disclose",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "assetripper--assetripper": {
+  "depth": "readme",
+  "note": "Unity asset extraction tool (C#).",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "astrotechies--unrealmodding": {
+  "depth": "readme",
+  "note": "Rust toolkit for Unreal asset modding.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "atenfyr--uassetapi": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "C# Unreal .uasset/.umap API. Project rejects AI-generated contributions.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "banteg--crimson": {
+  "depth": "readme",
+  "note": "Crimsonland 1.9.93 (2003, GOG Classic) rebuilt twice per README; Python tooling, MSVC; ~64%.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "bepinex--bepinex": {
+  "depth": "readme",
+  "note": "Unity mod framework: patch loading, config, plugin lifecycle.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "bevyengine--bevy": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: ECS game engine. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "bitshifter--glam-rs": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: math. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "blackgamma7--aidyn": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "bluisblu--cttr": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "bluisblu--pvz": {
+  "depth": "readme",
+  "note": "PvZ 0.9.9 beta build: MSVC via wibo, ninja configure.py + objdiff; <1% so far.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "casualx--pelite": {
+  "depth": "deep",
+  "note": "Rust PE parser with a CLI and lightweight pattern scanner; ships AI-writing \"skills\" files (alpine, unslop).",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "cdlewis--snowboardkids2-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "chimpsatsea--reach": {
+  "depth": "readme",
+  "note": "Halo Reach (Xbox 360) decomp: ninja configure.py, GPL-3.0, <1% so far; same engine lineage as Halo CE.",
+  "use": [
+   "halo-engine-re"
+  ]
+ },
+ "cosmicscribe64--eds-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "criterion-rs--criterion-rs": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: benchmarks. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "dasaav-dsv--from-singleton": {
+  "depth": "deep",
+  "note": "Finds game singletons by (RTTI) class name at runtime instead of hard-coded addresses.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "dasaav-dsv--liber": {
+  "depth": "readme",
+  "note": "C++ API/bindings for FromSoftware games.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "dbalatoni13--nfsmw": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "NFS Most Wanted multi-platform decomp; \"SAY NO TO SLOP\" policy (LLM only for rough passes/tooling with manual review). CC0.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "decompals--decompedia": {
+  "depth": "deep",
+  "note": "Decomp wiki export: intro to the decomp process, MWCC/GCC/IDO compiler pages, platform pages, assembly patterns, $gp register, line numbers, maspsx, decomp.dev integration guide, per-project pages. No licence file: paraphrase only.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "denzi-gh--crashwoc-decomp-gc": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "diasurgical--devilution": {
+  "depth": "readme",
+  "note": "Reconstructed Diablo 1 source: names/structure came from debug symbols that leaked on a console port (Japanese PSX build), then verified against the PC binary with a function comparer.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "dimforge--parry": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: collision. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "dimforge--rapier": {
+  "ai": "ai-ok",
+  "depth": "meta",
+  "note": "Rust ecosystem building block: physics. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "doldecomp--melee": {
+  "depth": "readme",
+  "note": "Matching decomp of Melee (US, GameCube): MWCC run under wibo/wine, ninja configure.py, objdiff + decomp.dev reports, m2c; reported 100%. Canonical GC/Wii workflow (see decompedia guide).",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "doldecomp--ogws": {
+  "ai": "no-ai-decomp",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "dtolnay--cxx": {
+  "depth": "meta",
+  "note": "FFI tooling: safe Rust<->C++ bridge. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "emoluvjd2--oregontrail-win32-decomp": {
+  "depth": "readme",
+  "note": "Reconstructed C++ for Oregon32.exe/OREGON32.DLL (1996): MSVC, Ghidra + objdiff, ~56%.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "encounter--objdiff": {
+  "depth": "deep",
+  "note": "The diff engine behind decomp.dev: compares compiled objects to target objects per symbol (x86/x64/PPC/MIPS/ARM/SH), `objdiff.json` units, report generation, WASM and CLI frontends.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "fmil95--recvx-decomp": {
+  "ai": "disclose",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "frida--frida-rust": {
+  "depth": "deep",
+  "note": "Rust bindings to Frida (dynamic instrumentation).",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "fyroxengine--fyrox": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: game engine/editor. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "gaberealb--parasite-eve-2-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "garyttierney--me3": {
+  "depth": "meta",
+  "note": "Rust mod loader for FromSoftware games (catalog: \"Rust mod loader\"); not read in depth, see its README for the profile/launch model.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "gerev--bumpy-reverse": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "gfx-rs--wgpu": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: graphics API. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "gimli-rs--gimli": {
+  "depth": "readme",
+  "note": "DWARF reader (Rust).",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "gimli-rs--object": {
+  "depth": "deep",
+  "note": "Unified object-file reading/writing (ELF, Mach-O, PE/COFF, Wasm, XCOFF): used by objdiff to read compiler output.",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "gltf-rs--gltf": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: glTF loader. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "godot-rust--gdext": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: Godot bindings. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "google--autocxx": {
+  "depth": "meta",
+  "note": "FFI tooling: auto-generated Rust<->C++ binding. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "haydntrigg--homeworld2classic": {
+  "depth": "readme",
+  "note": "Homeworld 2 decomp (Windows): objdiff + decomp.dev + ninja-style config/; ~4%.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "hedge-dev--unleashedrecomp": {
+  "depth": "deep",
+  "note": "Static recompilation of an Xbox 360 game (PPC -> C++ via XenonRecomp, shaders via XenosRecomp) with a Windows/Linux runtime layer; assets always user-supplied through an installer.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "homoradahn--soulsformats-rs": {
+  "depth": "readme",
+  "note": "Rust parsers for FromSoftware container/data formats.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "hpmason--retour-rs": {
+  "depth": "deep",
+  "note": "Cross-platform inline detour library for Rust (trampolines, RIP-relative fixups, hot-patching); nightly needed for static_detour!.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "icedland--iced": {
+  "depth": "deep",
+  "note": "Correct, fast x86/x64 decoder, formatter and assembler (Rust/.NET/Python/JS/Lua); instruction info API for register/memory/flow analysis.",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "icewind1991--vbsp": {
+  "depth": "readme",
+  "note": "Rust Source BSP map parser.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "id-software--doom-3-bfg": {
+  "depth": "meta",
+  "note": "Official id Software source release of DOOM 3 BFG Edition (GPL-3.0); MSVC build; reference architecture for a modern id Tech 4 engine.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "ieee802dot11ac--fnv": {
+  "ai": "human-only",
+  "depth": "deep",
+  "note": "Fallout: New Vegas Xbox 360 MemDebug build: reconstructed Gamebryo 2.2 and Bethesda TES* class headers. Policy: asks contributors not to use AI to decompile; used here for structure orientation only.",
+  "use": [
+   "bethesda-gamebryo-re"
+  ]
+ },
+ "image-rs--image": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: image codecs. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "isledecomp--isle": {
+  "depth": "deep",
+  "note": "Reference x86 MSVC project: reccmp annotations (// FUNCTION/STUB/GLOBAL/VTABLE), reccmp-project.yml targets with sha256, ReproBit byte-for-byte verification, beta/debug builds as ground truth, Kaitai format docs. LGPL-3.0.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "jam1garner--binrw": {
+  "depth": "deep",
+  "note": "Declarative binary reader/writer macros: magic, endianness, padding, offsets (FilePtr), validation. Best-in-class for writing format parsers in Rust.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "janhohenheim--rerecast": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: navmesh generation. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "jkanderson--soulsformats": {
+  "depth": "readme",
+  "note": "C# FromSoftware format reference.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "jovinull--sonicheroes": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "k0lb3--unitypy": {
+  "depth": "readme",
+  "note": "Python Unity bundle/asset reader; fastest way to script-inspect Unity data.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "laqieer--fireemblem8j": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "lasa01--plumber-core": {
+  "depth": "meta",
+  "note": "Rust Source-engine asset conversion library (catalog: \"Rust asset conversion library\"); clone failed in this harvest.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "latias94--unity-asset": {
+  "depth": "readme",
+  "note": "Rust Unity asset toolkit (third implementation).",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "lemiur--avp2-reconstructed": {
+  "ai": "ai-ok",
+  "depth": "deep",
+  "note": "LithTech engine, VC6 SP5: 92% byte-matched with reccmp-style annotations, objdiff reports, relink verification, library-code identification, behaviour audit of STUB functions, Ghidra name sync, second module (renderer DLL) with a different compiler.",
+  "use": [
+   "decomp-matching-workflow",
+   "re-binary-recon"
+  ]
+ },
+ "lifewillbeokay--moh-rising-sun": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "m4b--goblin": {
+  "depth": "deep",
+  "note": "Zero-copy ELF/Mach-O/PE/archive parser (Rust).",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "maikklein--unreal-rust": {
+  "depth": "readme",
+  "note": "Rust integration into Unreal Engine.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "marijnvdwerf--legoland": {
+  "ai": "ai-ok",
+  "depth": "deep",
+  "note": "MSVC6 matching decomp using reccmp + wibo on Linux; CLAUDE.md shows a compact agent brief (no inline asm, no goto, STUB macro, CRT/imports stay stubs).",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "mateuszklysz--lombyte": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "melalawi--battletanx-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "melalawi--ragewars-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "memflow--memflow": {
+  "depth": "deep",
+  "note": "Out-of-process memory introspection for machines/VMs/dumps. Out of scope for these skills (no live-process tampering guidance).",
+  "use": [
+   "re-binary-recon"
+  ]
+ },
+ "mitsuhiko--insta": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: snapshot tests. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "model-checking--kani": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: model checking. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "mozilla--cbindgen": {
+  "depth": "meta",
+  "note": "FFI tooling: Rust -> C/C++ headers. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "mystor--rust-cpp": {
+  "depth": "meta",
+  "note": "FFI tooling: inline C++ in Rust. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "nagisa--rust-libloading": {
+  "depth": "meta",
+  "note": "FFI tooling: dynamic library loading. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "nationalsecurityagency--ghidra": {
+  "depth": "readme",
+  "note": "Reverse-engineering platform. Headless scripts (Decompile.java / Disassemble.java / bulk rename from symbols.txt) are how the Thief3 and AVP2 projects feed agents.",
+  "use": [
+   "re-binary-recon",
+   "decomp-matching-workflow"
+  ]
+ },
+ "nextest-rs--nextest": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: test runner. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "nicoruedaa--project-arceus": {
+  "depth": "readme",
+  "note": "Rust/Bevy port driven by a versioned \"spreadsheet book\" of reverse-engineered facts (the Spreadsheet Method).",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "nordgaren--elden-ring-debug-tool": {
+  "depth": "meta",
+  "note": "Debugging tool for Elden Ring (catalog: \"Debugging tool\"); not read in depth. Online-play/anti-cheat caveat applies: use only offline.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "novapowers0--bloodyroar2recomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "nsmbw-community--nsmbw-decomp": {
+  "ai": "no-ai-decomp",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "open-goal--jak-project": {
+  "ai": "disclose",
+  "depth": "deep",
+  "note": "Decompiler + compiler for a custom Lisp (GOAL) + C++ runtime: an end-to-end port strategy (extract assets -> decompile -> recompile natively -> runtime). AGENTS.md: disclose AI use \"(AI-assisted)\"; never open issues or PRs on the user's behalf.",
+  "use": [
+   "engine-reimplementation",
+   "decomp-matching-workflow"
+  ]
+ },
+ "openblack--bw1-decomp": {
+  "ai": "ai-ok",
+  "depth": "deep",
+  "note": "MSVC6 x86 matching decomp with dtk+objdiff; AGENTS.md has the best \"mindset\" and experiment-discipline guidance (classify the diff, prove a knob moves output, bound the search), baseline/regression tooling, inline-budget analysis, Mac CodeWarrior symbols as ground truth. CC0.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "opokxeno--xsg-i-decomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "ortham--esplugin": {
+  "depth": "deep",
+  "note": "Plugin (.esp/.esm/.esl) parser for Morrowind, Oblivion, Skyrim, FO3/NV, FO4, Starfield; built for LOOT/libloadorder. GPL-3.0.",
+  "use": [
+   "bethesda-gamebryo-re"
+  ]
+ },
+ "ortham--libloadorder": {
+  "depth": "deep",
+  "note": "Load-order and active-plugin handling per game (includes OpenMW and Oblivion); ships an mdbook explaining load orders. GPL-3.0.",
+  "use": [
+   "bethesda-gamebryo-re"
+  ]
+ },
+ "pakompom--spacerangers1-decomp": {
+  "depth": "readme",
+  "note": "Recovers the original DELPHI source (not C/C++) for Space Rangers 1/HD; cargo tooling; reported 100%. Example of a non-MSVC target.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "pattytrish--unending-occlusion": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "perfare--il2cppdumper": {
+  "depth": "readme",
+  "note": "IL2CPP metadata dumper producing headers/scripts for disassemblers.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "pret--pokecrystal": {
+  "depth": "meta",
+  "note": "pret disassembly project: assembly-first (disassemble, label, then lift to C) with byte-for-byte rebuild as the correctness test.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "pret--pokegold": {
+  "depth": "meta",
+  "note": "pret disassembly project: assembly-first (disassemble, label, then lift to C) with byte-for-byte rebuild as the correctness test.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "pret--pokeheartgold": {
+  "depth": "meta",
+  "note": "pret disassembly project: assembly-first (disassemble, label, then lift to C) with byte-for-byte rebuild as the correctness test.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "pret--pokered": {
+  "depth": "meta",
+  "note": "pret disassembly project: assembly-first (disassemble, label, then lift to C) with byte-for-byte rebuild as the correctness test.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "pret--pokeruby": {
+  "depth": "meta",
+  "note": "pret disassembly project: assembly-first (disassemble, label, then lift to C) with byte-for-byte rebuild as the correctness test.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "proptest-rs--proptest": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: property-based tests. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "punpckhdq--halo": {
+  "depth": "deep",
+  "note": "Halo CE (build 2342, Xbox cachebeta.exe): ninja configure.py, Xbox SDK compiler, types borrowed from later debug builds via pdb-decompiler, bungie-style source tree (ai, objects, units, tag_files, hs scripting, rasterizer...). CC0. 15% code.",
+  "use": [
+   "halo-engine-re",
+   "decomp-matching-workflow"
+  ]
+ },
+ "rehan-remade--universal-modder": {
+  "ai": "ai-ok",
+  "depth": "deep",
+  "note": "MIT. Agent-first modding toolkit: 10 skills (mod-any-game loop, game-recon, reverse-engineering, mashup-mods...), 12 engine playbooks (incl. Bethesda, native, retro decomp), the `um` CLI (scan, kb, backup, publish check) and a knowledge base of ~59 agent-written field notes with symptom->cause->fix gotchas and a public index.json. Snapshotted into this hub (field-notes.json, playbooks.json).",
+  "use": [
+   "gamedecomp-library",
+   "game-hooking-patterns",
+   "bethesda-gamebryo-re"
+  ]
+ },
+ "rsdkmodding--sonic-mania-decompilation": {
+  "depth": "readme",
+  "note": "RSDK-engine game-logic decompilation as a portable, mod-friendly native port (not byte-matching); needs the original assets.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "rust-fuzz--cargo-fuzz": {
+  "depth": "meta",
+  "note": "Parser-hardening tool: fuzzing. Use for format libraries that read untrusted game files.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "rust-lang--cc-rs": {
+  "depth": "meta",
+  "note": "FFI tooling: compile C/C++ from build.rs. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "rust-lang--rust-bindgen": {
+  "depth": "meta",
+  "note": "FFI tooling: C header -> Rust FFI. Relevant when Rust code must talk to a C++ engine (OpenMW) or when exposing a Rust parser to C++.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "rust-sdl2--rust-sdl2": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: SDL2 bindings. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "ryan-myers--jet-force-gemini": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "ryan-rsm-mckenzie--bsa-rs": {
+  "depth": "deep",
+  "note": "`ba2` crate: DOM reader/writer for Bethesda archives, Morrowind through Starfield (TES3, TES4 incl. Oblivion BSA v103, FO4/Starfield BA2). Test suite ported from the C++ original. 0BSD licence = safe to study and adapt.",
+  "use": [
+   "bethesda-gamebryo-re",
+   "game-asset-formats"
+  ]
+ },
+ "samboycoding--cpp2il": {
+  "depth": "readme",
+  "note": "IL2CPP back to managed assemblies (analysis tool).",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "samidyfr--game-decompilations": {
+  "depth": "readme",
+  "note": "Alphabetical list of ~670 game decompilation repos (credits awesome-game-decomps, RetroReversing, decomp.dev); source of ~480 extra catalog entries here.",
+  "use": [
+   "gamedecomp-library"
+  ]
+ },
+ "sat-r--sa2": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "sat-r--sa3": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "seiunx-dev--unity-rs": {
+  "depth": "deep",
+  "note": "Rust Unity asset reader with an unusually strong AGENTS.md: bounded parsing, checked arithmetic, error families, fixtures-before-claims, corpus harness kept private.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "serde-rs--serde": {
+  "depth": "meta",
+  "note": "Rust ecosystem building block: serialization. Candidate dependency for a clean-room port or tooling.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "shdecompilations--silent-hill-decomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "shibbo--3dwdecomp": {
+  "ai": "ai-ok",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "simonlindholm--asm-differ": {
+  "depth": "deep",
+  "note": "Python assembly differ used by decomp.me and many MIPS/PPC projects (`diff.py`, `diff_settings.py`).",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "smgcommunity--garigari": {
+  "ai": "no-ai-decomp",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "smgcommunity--petari": {
+  "ai": "no-ai-decomp",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "solarcookies--tip-recomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "solarfren69420--gamedecomplibrary": {
+  "depth": "deep",
+  "note": "Catalog of 304 projects with progress snapshots, methods and evidence links; its site catalog.json is the primary data source here.",
+  "use": [
+   "gamedecomp-library"
+  ]
+ },
+ "sonicnext-dev--marathonrecomp": {
+  "depth": "readme",
+  "note": "Second XenonRecomp-based port; shows how the toolchain generalises across games.",
+  "use": [
+   "engine-reimplementation"
+  ]
+ },
+ "soulsmods--modengine2": {
+  "depth": "meta",
+  "note": "Mod loader for FromSoftware games (file overrides, extension DLLs); not read in depth.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "soulsmods--soulsformatsnext": {
+  "depth": "readme",
+  "note": "C# FromSoftware format library (reference implementation for BND/DCX/PARAM/FLVER-style formats).",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "sulfurnitride--rust-bsa-ba2-handler": {
+  "depth": "readme",
+  "note": "MIT BSA/BA2 pack/unpack/list/verify CLI+GUI; useful reference for Oblivion BSA v103 (zlib) flag handling.",
+  "use": [
+   "bethesda-gamebryo-re",
+   "game-asset-formats"
+  ]
+ },
+ "synamaxmusic--bar-decomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "theplayerrolo--lm-decomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "tremwil--vtable-rs": {
+  "depth": "deep",
+  "note": "Rust macro for declaring C++ vtable layouts, virtual-call wrappers and Rust-implemented subclasses of C++ classes.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "trumank--repak": {
+  "depth": "readme",
+  "note": "Rust Unreal .pak reader/writer.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "trumank--retoc": {
+  "depth": "readme",
+  "note": "Rust Unreal IoStore (.utoc/.ucas) tool and legacy<->IoStore converter.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "twist84--halo3_cache_release_recomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "ue4ss-re--re-ue4ss": {
+  "depth": "readme",
+  "note": "UE4SS: Lua/C++ scripting and object dumpers injected into Unreal games; reference for reflection-driven modding.",
+  "use": [
+   "game-hooking-patterns"
+  ]
+ },
+ "vatuu--silent-hill-decomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "vawser--paramdex": {
+  "depth": "readme",
+  "note": "Community database of PARAM field names/types: the data-driven way to document a huge table-based game.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "vawser--smithbox": {
+  "depth": "readme",
+  "note": "Editor for FromSoftware data; shows what a mature modding editor needs from a format library.",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "veradictus--thief3-decomp": {
+  "ai": "ai-ok",
+  "depth": "deep",
+  "note": "MSVC 7.1 x86 matching decomp driven by Claude workers: claim queue, context packets, try/accept gate with rulers, deferral slugs, family stamping, CHEATSHEET of verified codegen idioms, headless-Ghidra scripts, SDK mod loader (dinput8 proxy, MinHook/IAT hooks, PE-timestamp guard). Best agent-workflow reference. MIT.",
+  "use": [
+   "decomp-matching-workflow",
+   "game-hooking-patterns"
+  ]
+ },
+ "vswarte--fromsoftware-rs": {
+  "depth": "deep",
+  "note": "Pattern library for runtime modding of x64 MSVC games: RTTI-derived class bindings, FromStatic/FromSingleton lookup, AOB->RVA \"binary mapper\" with TOML profiles + RVA regression tests, param-generator, hooks on the main-thread task system, DllMain+hudhook+ilhook mod template, MSVC STL layouts, Superclass/Subclass vtable checks.",
+  "use": [
+   "game-hooking-patterns",
+   "re-binary-recon"
+  ]
+ },
+ "xbret--xenoblade": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "xeeynamo--sotn-decomp": {
+  "depth": "readme",
+  "note": "SotN decomp for PS1 (also PSP and Saturn): maspsx, splat, asm-differ, decomp-permuter, m2c, Ghidra/IDA in the workflow; AGPL-3.0; ~69%.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "yuanyan3060--unity-rs": {
+  "depth": "readme",
+  "note": "Rust Unity asset parser (second implementation).",
+  "use": [
+   "game-asset-formats"
+  ]
+ },
+ "zelda64recomp--zelda64recomp": {
+  "ai": "human-only",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ },
+ "zeldaret--botw": {
+  "depth": "meta",
+  "note": "Experimental WIP decompilation of BotW v1.5.0 (Switch); cmake build; catalog notes it is not a playable standalone port.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "zeldaret--oot": {
+  "depth": "meta",
+  "note": "OoT (N64): IDO and GCC toolchains per README, docker + make/python build, SHA-1 verification; reported 100% while the README still calls the repo work in progress.",
+  "use": [
+   "decomp-matching-workflow"
+  ]
+ },
+ "zeldaret--tww": {
+  "ai": "no-ai-decomp",
+  "depth": "readme",
+  "note": "",
+  "use": []
+ }
+}

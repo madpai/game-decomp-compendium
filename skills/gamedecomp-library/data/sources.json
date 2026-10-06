@@ -1,0 +1,60 @@
+{
+ "sources": [
+  {
+   "id": "gamedecomplibrary",
+   "name": "GameDecompLibrary",
+   "kind": "catalog",
+   "url": "https://github.com/solarfren69420/GameDecompLibrary",
+   "site": "https://solarfren69420.github.io/GameDecompLibrary/",
+   "license": "none stated",
+   "snapshot": "2026-10-04",
+   "records": 304,
+   "use": "Primary catalog: 304 projects (220 game decomps, 71 tools, 12 related) with platform, progress, methods, evidence links. Stored here as facts + paraphrased summaries; refreshed from the site catalog.json.",
+   "refresh": "scripts/refresh.py"
+  },
+  {
+   "id": "game-decompilations",
+   "name": "Game-Decompilations list (SamidyFR)",
+   "kind": "catalog",
+   "url": "https://github.com/SamidyFR/Game-Decompilations",
+   "license": "none stated",
+   "snapshot": "2026-09-29",
+   "records": 482,
+   "use": "Alphabetical list of ~670 decomp repos; the ~480 not already in GameDecompLibrary were added with GitHub metadata, derived platform/type, and README-derived summaries.",
+   "refresh": "scripts/refresh.py (re-run extra harvest)"
+  },
+  {
+   "id": "universal-modder",
+   "name": "universal-modder (rehan-remade)",
+   "kind": "field-notes",
+   "url": "https://github.com/rehan-remade/universal-modder",
+   "license": "MIT",
+   "snapshot": "2026-10-06",
+   "records": 59,
+   "use": "Agent-written field notes (50 games, 9 techniques; 684 gotchas), 12 engine playbooks, 10 skills, `um` CLI. Index snapshotted in data/field-notes.json, playbooks.json, modder-skills.json; full text via the upstream clone or URLs. Contributions upstream only with the user's approval.",
+   "refresh": "scripts/refresh/sync_modder_kb.py --pull"
+  },
+  {
+   "id": "decompedia",
+   "name": "decompedia (decompals)",
+   "kind": "methodology",
+   "url": "https://github.com/decompals/decompedia",
+   "license": "none stated",
+   "snapshot": "2026-09-24",
+   "records": 0,
+   "use": "Decomp wiki: intro, MWCC/GCC/IDO compiler pages, platform pages, assembly patterns, $gp, line numbers, maspsx, decomp.dev guide. Paraphrased into decomp-matching-workflow references; no text copied.",
+   "refresh": "manual (git clone)"
+  },
+  {
+   "id": "deep-read-clones",
+   "name": "Deep-read repositories",
+   "kind": "code-docs",
+   "url": "https://github.com/solarfren69420/GameDecompLibrary (catalog entries with depth=deep)",
+   "license": "per repository (see catalog)",
+   "snapshot": "2026-10-06",
+   "records": 29,
+   "use": "Shallow clones read for the skills: fromsoftware-rs (+vtable-rs, from-singleton), Thief3, BW1, AVP2, LEGOLAND, isle, Halo CE, FNV, objdiff, asm-differ, bsa-rs, esplugin, libloadorder, pelite, iced, binrw, unity-rs, jak-project, UnleashedRecomp... Clones are NOT redistributed; scripts/clone.sh fetches them on demand and refuses projects that forbid agent use.",
+   "refresh": "scripts/clone.sh --deep"
+  }
+ ]
+}
