@@ -32,6 +32,34 @@
 "source": "local"
 },
 {
+"path": "games/oblivion/oblivion-menus-xml-and-script-command-coverage.md",
+"kind": "game",
+"title": "Oblivion's UI is data (menu XML in Misc.bsa) and how to measure script-command coverage by call sites",
+"game": "The Elder Scrolls IV: Oblivion",
+"games_also": [],
+"game_version": "Steam retail install; Oblivion.esm and Oblivion - Misc.bsa from the same install",
+"platform": "windows",
+"engine": "gamebryo",
+"route": "reimplementation",
+"tools": [
+"bsa reader (own, ~40 lines)",
+"script compiler to Lua",
+"regex over generated code",
+"re-binary-recon/string_xrefs.py"
+],
+"anti_cheat": "None involved: files read from disk only",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/games/oblivion/oblivion-menus-xml-and-script-command-coverage.md",
+"summary": "Two measurements that change how a port should be planned: the original menus are 104 XML files (an expression language over DDS art), so UI parity means writing an interpreter, not hand-building screens; and counting command call sites in the compiled master shows which subsystems (not which commands) the script runtime is missing.",
+"gotchas": 5,
+"source": "local"
+},
+{
 "path": "games/oblivion/openoblivion-port-lessons-scripts-dialogue-trees.md",
 "kind": "game",
 "title": "OpenOblivion lessons: TES4 script compiler, dialogue/quest runtime, SpeedTree billboards and touch menus on a patched OpenMW",

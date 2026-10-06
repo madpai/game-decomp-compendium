@@ -22,7 +22,7 @@ A knowledge base **for AI agents** (and the humans directing them) working on ga
 Data (in `skills/gamedecomp-library/data/`):
 - `catalog.json` / `catalog.tsv`: 790 projects (702 decomps, 72 tools, 15 related, 1 unconfirmed) with platform, type, compilers/tools/build styles, progress, licence, stars, push date, read-depth, AI-contribution policy flag, notes.
 - `field-notes.json`: 59 agent-written field notes from [universal-modder](https://github.com/rehan-remade/universal-modder) (50 games, 9 techniques, ~680 symptom→cause→fix gotchas), `playbooks.json` (12 engine playbooks), `modder-skills.json`.
-- `local-notes.json`: this repository's own field notes (`knowledge/`: Oblivion exe recon, static-recon technique, OpenOblivion lessons; same format as universal-modder's, so they can be offered upstream).
+- `local-notes.json`: this repository's own field notes (`knowledge/`: Oblivion exe recon, menu XML and script-command coverage, static-recon technique, OpenOblivion lessons; same format as universal-modder's, so they can be offered upstream).
 - `sources.json`: where everything came from, licences, snapshot dates, refresh commands.
 
 ## Quick start
