@@ -36,10 +36,13 @@ Probe speeds against the formula's predictions, and one earlier private sample o
 Worked for the modelled case. Desktop probe, same binary: walk 116.6, run 355.6, sneak 70.0 units/s with the weapon sheathed (with a weapon drawn: 106.0, 323.3, 63.6 walk, run, sneak). The original's walking peak of 117.3 is consistent with the sheathed walk. Not modelled: carried weight, changing attributes and skills, skill use, swim speed, jump height, sneak camera height. Other actors keep the borrowed speeds.
 
 ## Why
-Inferred from a static read of the routine plus one consistent walking sample; the formula's run branch was never sampled in the original.
+Inferred from a static read of the routine plus one consistent walking sample; the run branch was sampled later (2026-10-06) and agreed at 355.6.
 
 ## Next
-Sample the original's run and sneak speeds to confirm the run branch, then jump height and swimming. Publish the method and the rules, not settings tables.
+Sneak speeds, then swimming; jump is done (EXP-OO-015). Publish the method and the rules, not settings tables.
+
+## Update 2026-10-06
+The run branch is now verified on the running original: the controller's first velocity after Shift+W read 355.6 units/s (finding `oblivion-run-speed-355-6`). Jump, gravity and air control were recovered separately (EXP-OO-015).
 
 ## Unverified
-Original run speed, sneak speed and jump; encumbrance and skill progression; phone feel.
+Sneak speed and weapon-drawn speeds in the original; encumbrance and skill progression; phone feel.

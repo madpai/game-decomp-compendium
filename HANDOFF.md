@@ -1,3 +1,18 @@
+# Update 2026-10-06 (session after the knowledge-quality phase): the loop closed once
+
+OpenOblivion's next movement milestone wrote back: the original's airborne laws (gravity, jump formula, per-frame
+semi-implicit integration, air control) and run speed were verified on the running game and ported; records are
+EXP-OO-015 (worked) and EXP-OO-016 (a failed inference from one apex), seven new findings (`oblivion-world-gravity-73-575`,
+`oblivion-controller-semi-implicit-per-frame`, `oblivion-jump-height-formula`, `oblivion-air-control-relaxation`,
+`oblivion-run-speed-355-6`, `oblivion-controller-state-codes`, `oblivion-grounded-state-falls-under-gravity`), the technique note
+`techniques/replaying-a-character-controller-from-its-own-timesteps.md` (graph node `technique:replay-oracle`, problem
+`problem:jump-height-mismatch`), four golden queries (47 pass), and updates to `character-controller-and-stairs.md`,
+`physics-backend-translation.md` and the case study. A ranking regression caused by the new record (it displaced the emulator
+crash record) was fixed by removing incidental vocabulary and noted on the golden test. Next measurement worth doing and
+recording: the controller's **support check** (where ground becomes air; sample drops of 10 to 120 units), then step
+height and slope limit. The snippet is still not pasted into OpenOblivion's AGENTS.md by the compendium; OpenOblivion's
+AGENTS.md now links the compendium and the method directly.
+
 # Handoff (written 2026-10-06, end of the "knowledge quality" phase)
 
 ## State

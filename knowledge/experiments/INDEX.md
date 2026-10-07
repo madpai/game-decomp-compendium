@@ -21,3 +21,5 @@ Find one with `hub.py tried "<idea>"` or `hub.py experiments --result failed`. F
 | [EXP-OO-012](exp-oo-012-kf-decode-and-tpose-attachment-skeleton.md) | worked | verified / inferred | openoblivion | Animate TES4 NPCs: KF transform decoding, then a T-pose caused by parts binding to a private skeleton copy |
 | [EXP-OO-013](exp-oo-013-use-button-at-vilverin-gate.md) | partial | inferred / inferred | openoblivion | USE does nothing at the Vilverin hall gate: touch overlay layout and the same-cell door handler |
 | [EXP-OO-014](exp-oo-014-gmst-defaults-from-static-initializers.md) | worked | verified / verified | openoblivion | Recover game-setting defaults from an executable with no symbols by scanning static-initializer patterns |
+| [EXP-OO-015](exp-oo-015-airborne-law-recovered-and-ported.md) | worked | verified / verified | openoblivion | Recover the original's jump, gravity and air-control laws from the running game and port them behind a switch |
+| [EXP-OO-016](exp-oo-016-jump-formula-from-one-apex.md) | failed | verified / verified | openoblivion | Infer the original's jump height from one measured apex (wall-clock, one frame time) |

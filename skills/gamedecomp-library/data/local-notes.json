@@ -581,6 +581,85 @@
 "source": "local"
 },
 {
+"path": "techniques/replaying-a-character-controller-from-its-own-timesteps.md",
+"kind": "technique",
+"title": "Measuring an original game's character controller by replaying its own timesteps (live read-only sampler + per-update replay oracle)",
+"game": "",
+"games_also": [],
+"game_version": "",
+"platform": null,
+"engine": null,
+"route": null,
+"tools": [],
+"anti_cheat": "",
+"status": "working",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"date": "2026-10-06",
+"tags": [
+"character-controller",
+"havok",
+"memory-sampler",
+"replay",
+"oracle",
+"jump",
+"gravity",
+"frame-rate",
+"oblivion",
+"proton"
+],
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/replaying-a-character-controller-from-its-own-timesteps.md",
+"summary": "Sample the running original at several times its update rate, collapse the samples into the game's own updates, then replay a candidate law over each update using the `dt` the game logged. If the law is right the residual is zero to rounding. It turned three guesses about Oblivion's jump (height, takeoff speed, integration order) and two about air control into exact statements with an hour of work, and it explained why every apex we had measured before disagreed with the formula.",
+"verification": "Replay residuals are exact on the recorded traces. Not verified: other Acrobatics values (the player's was 5), other frame rates, encumbrance, fatigue cost, creatures and NPCs, swimming, and the support range that decides when the ground state is kept or entered.",
+"gotchas": 6,
+"gotcha_items": [
+{
+"n": 1,
+"symptom": "Reading another process's memory is refused even for your own user",
+"cause": "",
+"fix": "",
+"detail": "(Yama `ptrace_scope` 1) when the game is not a descendant of the sampler. Run the read-only sampler with the privileges your system needs, guard it with a check that the target's command line is the isolated reference, and never write."
+},
+{
+"n": 2,
+"symptom": "The first jump trial reads a lower apex than the formula",
+"cause": "",
+"fix": "",
+"detail": "if there is a ceiling (the start corridor capped a jump at 32 units). Choose open space and look at `z` against a known ceiling before trusting an apex."
+},
+{
+"n": 3,
+"symptom": "A held jump or any wall-clock comparison hides the cause",
+"cause": "",
+"fix": "",
+"detail": ": compare per update with the logged `dt`."
+},
+{
+"n": 4,
+"symptom": "Console toggling needs a held key",
+"cause": "",
+"fix": "",
+"detail": "A 28 fps game can miss a press shorter than a frame; send key down, wait 0.15 s, key up. Typed text is lost if the console is still closed (the letters become game input)."
+},
+{
+"n": 5,
+"symptom": "`pkill -f '<pattern>'` kills the shell that contains the pattern",
+"cause": "",
+"fix": "",
+"detail": "(and the tool call with it). Use `pgrep -f '[Z]:.*Oblivion.exe'` style patterns."
+},
+{
+"n": 6,
+"symptom": "Teleporting twice in a row once ended in the main menu",
+"cause": "",
+"fix": "",
+"detail": "(probably a death and reload); relaunch and walk instead of chaining `setpos`."
+}
+],
+"source": "local"
+},
+{
 "path": "techniques/reviewing-an-inflight-game-port.md",
 "kind": "technique",
 "title": "Reviewing an in-flight game port: what to measure first (feedback loop, engine split, subsystem ceiling, UI as data, documentation drift)",

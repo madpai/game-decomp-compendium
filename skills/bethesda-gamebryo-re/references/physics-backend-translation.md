@@ -37,3 +37,10 @@ Reproduce Havok or ship its tools; execute MOPP; apply a vertex scale to a class
 
 ## Open questions
 The layer filter matrix; step height and slope limit of the original controller; terrain height-field collision; whether MOPP-culled queries equal full-mesh queries; packed-strip handling for Fallout 3 and later [guessed relevant; census first]; collision material effects on sounds and friction.
+
+
+## Gravity, jump and air control when the donor integrates differently (EXP-OO-015)
+- The original integrates once per frame as `v -= g dt; x += v dt`. A donor that moves first and then subtracts gravity (OpenMW's solver) overshoots the apex by about 4.4 units at 60 Hz for the same launch speed; carry one step of gravity in the launch speed (`sqrt(2 g h) - g dt`) to reproduce the original's sequence exactly.
+- Do not keep the donor's launch factor when moving or its steering factor: keep the horizontal velocity at takeoff and relax it toward the wanted velocity by the original's small per-update gain; feed the solver the difference from the takeoff velocity because it adds its own inertia.
+- A donor's gravity constant may be a `constexpr` used across the tree; make it a value that converts to float and reads a switch at run time instead of editing every use, so one binary serves paired probes.
+- Original values (verified, Oblivion Steam build): gravity 73.575 Havok units/s^2, jump `min + (max - min) x Acrobatics / 100`, air-control gain `base + mult x Acrobatics / 100` per update.
