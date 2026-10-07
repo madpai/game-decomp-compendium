@@ -612,7 +612,7 @@
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/replaying-a-character-controller-from-its-own-timesteps.md",
 "summary": "Sample the running original at several times its update rate, collapse the samples into the game's own updates, then replay a candidate law over each update using the `dt` the game logged. If the law is right the residual is zero to rounding. It turned three guesses about Oblivion's jump (height, takeoff speed, integration order) and two about air control into exact statements with an hour of work, and it explained why every apex we had measured before disagreed with the formula.",
 "verification": "Replay residuals are exact on the recorded traces. Not verified: other Acrobatics values (the player's was 5), other frame rates, encumbrance, fatigue cost, creatures and NPCs, swimming, and the support range that decides when the ground state is kept or entered.",
-"gotchas": 6,
+"gotchas": 7,
 "gotcha_items": [
 {
 "n": 1,
@@ -655,6 +655,13 @@
 "cause": "",
 "fix": "",
 "detail": "(probably a death and reload); relaunch and walk instead of chaining `setpos`."
+},
+{
+"n": 7,
+"symptom": "A port's own bookkeeping can break at a higher frame rate than the one you tested",
+"cause": "",
+"fix": "",
+"detail": "Add a one-line log of the quantity you matched (here each jump's rise) so the device reports it; the first phone run showed `rise 0` where the desktop showed 66.8 (EXP-OO-017)."
 }
 ],
 "source": "local"

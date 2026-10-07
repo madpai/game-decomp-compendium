@@ -23,3 +23,4 @@ Find one with `hub.py tried "<idea>"` or `hub.py experiments --result failed`. F
 | [EXP-OO-014](exp-oo-014-gmst-defaults-from-static-initializers.md) | worked | verified / verified | openoblivion | Recover game-setting defaults from an executable with no symbols by scanning static-initializer patterns |
 | [EXP-OO-015](exp-oo-015-airborne-law-recovered-and-ported.md) | worked | verified / verified | openoblivion | Recover the original's jump, gravity and air-control laws from the running game and port them behind a switch |
 | [EXP-OO-016](exp-oo-016-jump-formula-from-one-apex.md) | failed | verified / verified | openoblivion | Infer the original's jump height from one measured apex (wall-clock, one frame time) |
+| [EXP-OO-017](exp-oo-017-takeoff-bookkeeping-at-120-fps.md) | worked | verified / verified | openoblivion | Per-frame takeoff and landing bookkeeping in a controller that runs faster than the physics step |

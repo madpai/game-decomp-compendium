@@ -39,5 +39,7 @@ You own an offline single-player game, you can run it unchanged (Proton is fine)
 5. **`pkill -f '<pattern>'` kills the shell that contains the pattern** (and the tool call with it). Use `pgrep -f '[Z]:.*Oblivion.exe'` style patterns.
 6. **Teleporting twice in a row once ended in the main menu** (probably a death and reload); relaunch and walk instead of chaining `setpos`.
 
+7. **A port's own bookkeeping can break at a higher frame rate than the one you tested.** Add a one-line log of the quantity you matched (here each jump's rise) so the device reports it; the first phone run showed `rise 0` where the desktop showed 66.8 (EXP-OO-017).
+
 ## Verification
 Replay residuals are exact on the recorded traces. Not verified: other Acrobatics values (the player's was 5), other frame rates, encumbrance, fatigue cost, creatures and NPCs, swimming, and the support range that decides when the ground state is kept or entered.
