@@ -1,5 +1,7 @@
 # Update 2026-10-06 (session after the knowledge-quality phase): the loop closed once
 
+**End of night addendum:** the airborne port was then confirmed on the owner's phone (three running jumps: rise 66.8/66.4/67.7 units, horizontal 320 to 355 units/s, owner verdict "feels more right"), after a bug in the port's own bookkeeping at 120 fps was found by a one-line on-device log (EXP-OO-017; gotcha added to the physics reference and the technique note). State: 903 selftest checks, 48 golden queries; new record text can displace older records in golden windows, so keep new records free of unrelated vocabulary and note any regression on the test. Owner rule recorded in OpenOblivion's AGENTS.md: the engine must always feel like the original, liberties only for touch/mobile play.
+
 OpenOblivion's next movement milestone wrote back: the original's airborne laws (gravity, jump formula, per-frame
 semi-implicit integration, air control) and run speed were verified on the running game and ported; records are
 EXP-OO-015 (worked) and EXP-OO-016 (a failed inference from one apex), seven new findings (`oblivion-world-gravity-73-575`,
