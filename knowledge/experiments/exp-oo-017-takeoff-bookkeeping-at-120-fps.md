@@ -33,13 +33,13 @@ Treat a takeoff as pending until the physics has reported the air at least once 
 The one-line jump log (rise and air time) on the phone and in the desktop probe, the phone's 20 Hz position samples fitted to the law, and the unchanged desktop regression rows.
 
 ## Result
-Before: three taps, three `rise 0` lines. After the fix the desktop logs `rise 66.77 units, air time 0.999 s` and the stair rows are unchanged; the phone result of the fixed build is pending the device reconnecting. The old build's position samples already fit the original's law at 60 Hz within 2.7 units, so the lift itself worked and the damage was in the horizontal velocity of running jumps (the takeoff velocity would have been added twice).
+Before: three taps, three `rise 0` lines. After the fix the desktop logs `rise 66.77 units, air time 0.999 s` and the stair rows are unchanged; on the phone the fixed build logged rises of 66.8, 66.4 and 67.7 units for three running jumps with horizontal speed 320 to 355 units/s (the run speed kept, not doubled). The owner had reported the buggy build's jumps as "too far". The old build's position samples already fit the original's law at 60 Hz within 2.7 units, so the lift itself worked and the damage was in the horizontal velocity of running jumps (the takeoff velocity would have been added twice).
 
 ## Why
 Verified for the mechanism of the log line (stale ground state between frames). Inferred for the running-jump consequence (never observed on the phone because the old build was only tested standing).
 
 ## Next
-Test a running jump on the phone and read the log; give any controller bookkeeping an explicit "physics has acknowledged this" flag rather than inferring state from the ground flag. Be suspicious of any per-frame logic that reads physics results on a 90 or 120 Hz device.
+Done (see Result); give any controller bookkeeping an explicit "physics has acknowledged this" flag rather than inferring state from the ground flag. Be suspicious of any per-frame logic that reads physics results on a 90 or 120 Hz device.
 
 ## Unverified
-Running jumps on the phone; other refresh rates; behaviour when physics steps twice in one frame (low frame rates).
+Other refresh rates; the first (buggy) build's running-jump distance was never measured, only reported as too far; behaviour when physics steps twice in one frame (low frame rates).
