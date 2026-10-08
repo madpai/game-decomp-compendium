@@ -1,3 +1,13 @@
+# Update 2026-10-08 (OpenOblivion session 5): support range, hover and capture written back
+
+EXP-OO-018 (worked: level-ground support range 2.0 Havok units, vz reset every update, capture keeps its velocity, replays at 21 and 30
+updates/s, ported as an opt-in receipt) and EXP-OO-019 (failed: stair sliding from the hull sweep's normal), three new findings
+(`oblivion-support-range-2-havok`, `oblivion-grounded-hover-resets-velocity`, `oblivion-capture-keeps-velocity-needs-descent`), the finding
+`oblivion-grounded-state-falls-under-gravity` revised (true for stairs, contradicted on level ground), technique-note gotchas 8 to 10, three
+golden queries (selftest 964, 51 golden). Ranking check again: the first draft of EXP-OO-018 displaced the emulator-GLES record, fixed by
+removing the word "emulator" from it. Next measurement: the proxy's surface classification (stairs), the original on a walkable ramp at
+30 Hz or more.
+
 # Update 2026-10-06 (session after the knowledge-quality phase): the loop closed once
 
 **End of night addendum:** the airborne port was then confirmed on the owner's phone (three running jumps: rise 66.8/66.4/67.7 units, horizontal 320 to 355 units/s, owner verdict "feels more right"), after a bug in the port's own bookkeeping at 120 fps was found by a one-line on-device log (EXP-OO-017; gotcha added to the physics reference and the technique note). State: 903 selftest checks, 48 golden queries; new record text can displace older records in golden windows, so keep new records free of unrelated vocabulary and note any regression on the test. Owner rule recorded in OpenOblivion's AGENTS.md: the engine must always feel like the original, liberties only for touch/mobile play.

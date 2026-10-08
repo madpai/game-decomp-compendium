@@ -41,5 +41,9 @@ You own an offline single-player game, you can run it unchanged (Proton is fine)
 
 7. **A port's own bookkeeping can break at a higher frame rate than the one you tested.** Add a one-line log of the quantity you matched (here each jump's rise) so the device reports it; the first phone run showed `rise 0` where the desktop showed 66.8 (EXP-OO-017).
 
+8. **Placement trials (`player.setpos z`) find ranges that a walk cannot.** Put the player N units above a flat floor for several N, bracket the switch point with 0.2 to 0.5 unit steps, and read the first update's state. A drop of about 125 units kills the level-1 player and the game falls back to the main menu: restore health between drops, or the next typed commands go into the menu (EXP-OO-018).
+9. **The port's own physics step is not constant either.** The first steps after a cell loads carried 0.2, 0.07 and 0.02 s; a position-based test started at load measures the hitch, not the law. Start such tests from a jump (or after a settle) and pass the recorded next step into any function that prepares a velocity for the following update.
+10. **Software GL cannot give a high frame rate on an exterior cell** (10 to 13 updates/s even at 320x240 with grass and water effects off). Laws that depend on `dt` squared (a hover) need an interior at 30 Hz or hardware GL to be seen on slopes.
+
 ## Verification
-Replay residuals are exact on the recorded traces. Not verified: other Acrobatics values (the player's was 5), other frame rates, encumbrance, fatigue cost, creatures and NPCs, swimming, and the support range that decides when the ground state is kept or entered.
+Replay residuals are exact on the recorded traces. The support range (2.0 Havok units), the level-ground hover and the capture rule replay at 21 and 30 updates/s (EXP-OO-018). Not verified: other Acrobatics values (the player's was 5), 60 fps, encumbrance, fatigue cost, creatures and NPCs, swimming, walkable slopes, and the classification that makes stair contacts accumulate velocity (EXP-OO-019).

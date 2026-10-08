@@ -611,8 +611,8 @@
 ],
 "url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/techniques/replaying-a-character-controller-from-its-own-timesteps.md",
 "summary": "Sample the running original at several times its update rate, collapse the samples into the game's own updates, then replay a candidate law over each update using the `dt` the game logged. If the law is right the residual is zero to rounding. It turned three guesses about Oblivion's jump (height, takeoff speed, integration order) and two about air control into exact statements with an hour of work, and it explained why every apex we had measured before disagreed with the formula.",
-"verification": "Replay residuals are exact on the recorded traces. Not verified: other Acrobatics values (the player's was 5), other frame rates, encumbrance, fatigue cost, creatures and NPCs, swimming, and the support range that decides when the ground state is kept or entered.",
-"gotchas": 7,
+"verification": "Replay residuals are exact on the recorded traces. The support range (2.0 Havok units), the level-ground hover and the capture rule replay at 21 and 30 updates/s (EXP-OO-018). Not verified: other Acrobatics values (the player's was 5), 60 fps, encumbrance, fatigue cost, creatures and NPCs, swimming, walkable slopes, and the classification that makes stair contacts accumulate velocity (EXP-OO-019).",
+"gotchas": 10,
 "gotcha_items": [
 {
 "n": 1,
@@ -662,6 +662,27 @@
 "cause": "",
 "fix": "",
 "detail": "Add a one-line log of the quantity you matched (here each jump's rise) so the device reports it; the first phone run showed `rise 0` where the desktop showed 66.8 (EXP-OO-017)."
+},
+{
+"n": 8,
+"symptom": "Placement trials (`player.setpos z`) find ranges that a walk cannot",
+"cause": "",
+"fix": "",
+"detail": "Put the player N units above a flat floor for several N, bracket the switch point with 0.2 to 0.5 unit steps, and read the first update's state. A drop of about 125 units kills the level-1 player and the game falls back to the main menu: restore health between drops, or the next typed commands go i…"
+},
+{
+"n": 9,
+"symptom": "The port's own physics step is not constant either",
+"cause": "",
+"fix": "",
+"detail": "The first steps after a cell loads carried 0.2, 0.07 and 0.02 s; a position-based test started at load measures the hitch, not the law. Start such tests from a jump (or after a settle) and pass the recorded next step into any function that prepares a velocity for the following update."
+},
+{
+"n": 10,
+"symptom": "Software GL cannot give a high frame rate on an exterior cell",
+"cause": "",
+"fix": "",
+"detail": "(10 to 13 updates/s even at 320x240 with grass and water effects off). Laws that depend on `dt` squared (a hover) need an interior at 30 Hz or hardware GL to be seen on slopes."
 }
 ],
 "source": "local"

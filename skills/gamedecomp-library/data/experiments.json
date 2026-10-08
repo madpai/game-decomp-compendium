@@ -884,6 +884,108 @@
 "Next": "Done (see Result); give any controller bookkeeping an explicit \"physics has acknowledged this\" flag rather than inferring state from the ground flag. Be suspicious of any per-frame logic that reads physics results on a 90 or 120 Hz device.",
 "Unverified": "Other refresh rates; the first (buggy) build's running-jump distance was never measured, only reported as too far; behaviour when physics steps twice in one frame (low frame rates)."
 }
+},
+{
+"id": "EXP-OO-018",
+"title": "Recover the original's support range, hover and landing capture from drop trials and port them behind a switch",
+"project": "openoblivion",
+"result": "worked",
+"level": "verified",
+"why_level": "verified",
+"scope": "build",
+"status": "final",
+"date": "2026-10-08",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"about": [
+"subsystem:player-controller",
+"struct:bhkCharacterController",
+"engine:openmw",
+"technique:replay-oracle",
+"technique:runtime-memory-sampler",
+"technique:paired-same-binary-probe",
+"technique:hash-locked-receipts",
+"problem:tes4-movement-parity"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"support-range",
+"hover",
+"landing-capture",
+"havok-character-proxy",
+"drop-trial"
+],
+"related": [
+"EXP-OO-015",
+"EXP-OO-019"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-018-support-range-hover-and-capture-recovered-and-ported.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-018-support-range-hover-and-capture-recovered-and-ported.md",
+"sections": {
+"Symptom": "After the airborne law was ported, two behaviours of the original were on record but unexplained: after a jump the state switched to ground 15 to 17 units above the final rest height and the hull then glided down for about a second, and a 38-unit stair flight never left the ground state. The port snapped the hull to the ground every step (the donor solver's 62-unit step-down), so landings and ledges looked nothing like the original.",
+"Hypothesis": "One support range explains both: the controller is \"supported\" while the ground is within a fixed distance below it, and a supported controller does not accumulate gravity.",
+"Environment": "The owner's retail game under Proton on an isolated display, software GL (about 21 updates/s at 800x600, 30 at 320x240), read-only 200 Hz sampler of the player's controller, input by scripted key events and console `player.setpos z`. Port: OpenMW donor solver, desktop probe (nominally 60 Hz physics) and a virtual Android device.",
+"Change": "Placed the player 5 to 125 units above the base of a flight of stairs (a flat floor) and let it fall; bracketed the range with 13.0 to 15.1 units; replayed every update with the logged step time. Ported the law as a wrapper around the host movement solver (a new hash-locked receipt owning only the file that calls the solver), behind an opt-in switch.",
+"Oracle": "Per-update replay of the original (position and velocity, residual 0.05 units) and, for the port, a unit test that feeds four recorded drops through the port's function, the desktop probe's jump and stair, ramp, wall and ceiling fixtures with the switch off and on, and the virtual device's jump log.",
+"Result": "Supported while the ground is less than 2.0 Havok units (13.998 units) below rest (bracket 1.9717 to 2.0003). Supported on level ground: `vz = -g*dt` every update (no accumulation), so the hull sinks `g*dt^2` per update. The capturing update keeps its velocity; capture needs `vz <= 0`. The law replays at both frame rates. Port: rise unchanged, capture 9 to 14 units up, hover about a second at 60 Hz, stairs/ramp/wall/ceiling rows unchanged (steep contacts keep the host's handling); jumps on the virtual device rise the same with 0.045 s less air time.",
+"Why": "Verified for the law on level ground. The stair flights show the same state with an accumulating velocity, so the hover rule is not the whole controller (see EXP-OO-019). The hull is a 40-unit-wide cone, which makes a stair nosing a steep contact.",
+"Next": "Read the proxy's surface classification (supported, sliding, unsupported) from the executable to port the stair law; measure the original on a walkable ramp at 30 Hz or more; the owner's feel test of the hover and of walking downhill.",
+"Unverified": "Behaviour at 60 fps (nothing above 30 Hz was recorded; the 60 Hz hover duration is a computation); walkable slopes: with the switch on the port rides about 14 units above a 28 degree ramp and is grounded 35% of the time, the original is unmeasured there. A 125-unit drop kills the level-1 player and returns the game to the main menu (restore health between trials). An exterior cell ran at 10 to 13 updates/s even at 320x240, too slow for any frame-rate-dependent measurement."
+}
+},
+{
+"id": "EXP-OO-019",
+"title": "Reproduce the original's stair free fall by classing the downward hull sweep's contact normal as sliding",
+"project": "openoblivion",
+"result": "failed",
+"level": "verified",
+"why_level": "inferred",
+"scope": "project",
+"status": "final",
+"date": "2026-10-08",
+"agents": [
+"Claude Code (Sonnet 5.5)"
+],
+"about": [
+"subsystem:player-controller",
+"struct:bhkCharacterController",
+"engine:openmw",
+"technique:paired-same-binary-probe",
+"problem:stair-camera-jolt"
+],
+"games": [
+"game:oblivion"
+],
+"tags": [
+"stairs",
+"sliding",
+"contact-normal",
+"cone-hull",
+"support-check"
+],
+"related": [
+"EXP-OO-018",
+"EXP-OO-005",
+"EXP-OO-006"
+],
+"supersedes": "",
+"path": "experiments/exp-oo-019-sliding-state-from-the-hull-sweep-normal.md",
+"url": "https://github.com/madpai/game-decomp-compendium/blob/main/knowledge/experiments/exp-oo-019-sliding-state-from-the-hull-sweep-normal.md",
+"sections": {
+"Symptom": "The original keeps the ground state through a stair flight while the vertical velocity accumulates (a free fall per tread), but resets it every update on level ground. The state flags and the proxy's own velocity do not separate the two cases.",
+"Hypothesis": "The support check classifies the surface it finds as supported or sliding (as Havok's character proxy does); the 40-unit-wide cone hull touches a stair nosing with its slanted surface (about 58 degrees, steeper than the walkable limit), so the contact is sliding and the velocity accumulates; on level ground the apex touches a flat surface.",
+"Environment": "The port's desktop probe walking down the real Vilverin stairs from the start of the original's recorded trace, with the grounded law on (mode 1: walkable contacts only; mode 2: plus sliding on the sweep's steep normal).",
+"Change": "After the host solver, sweep the hull down from its height, take the hit normal, and for a steep normal keep the ground state while accumulating `vz -= g*dt`, stopping on contact.",
+"Oracle": "Height against distance along the flight from the original's trace (landing plateaus at 297.7 and 258.3 units) and the ground/air state.",
+"Result": "Mode 1 (steep contacts keep the host's handling) matches the stairs without the receipt. Mode 2 left the hull up to 22 units above the treads and in the air for stretches (original: grounded all the way, within a few units of the treads); the grounded fraction on the generated descent fixture fell from 1.0 to 0.5.",
+"Why": "Inferred: the hull sweep's normal at the top edge of a flight is that of the landing (the hull is still half over it), so the first steps after the edge are classified level and hover; the sweep cannot tell an edge contact from a level contact when the hull straddles an edge. The proxy's real classification is not read.",
+"Next": "Read the proxy's contact and surface-info code (the support check) in the executable and port its rule, then compare the height profile along the flight against the recorded trace again.",
+"Unverified": "That the original's classification is a normal-based one at all; which normal (contact manifold, support cast or centre ray) it uses."
+}
 }
 ]
 }
